@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\KnowYourCustomer.Common\KnowYourCustomer.Common.csproj" />
+    <ProjectReference Include="..\KnowYourCustomer.Kyc.Contracts.Public\KnowYourCustomer.Kyc.Contracts.Public.csproj" />
+    <ProjectReference Include="..\KnowYourCustomer.Kyc.Contracts\KnowYourCustomer.Kyc.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>
