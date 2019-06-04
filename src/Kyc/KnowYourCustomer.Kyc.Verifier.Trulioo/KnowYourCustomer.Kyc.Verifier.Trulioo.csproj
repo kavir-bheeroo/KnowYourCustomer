@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Trulioo.V1.Client.NET" Version="2.1.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KnowYourCustomer.Kyc.Verifier.Contracts\KnowYourCustomer.Kyc.Verifier.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

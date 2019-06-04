@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using KnowYourCustomer.Kyc.Contracts.Interfaces;
+using KnowYourCustomer.Kyc.Mappers;
 using KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors;
 using KnowYourCustomer.Kyc.MrzProcessor.Contracts.Interfaces;
 using KnowYourCustomer.Kyc.Services;
+using KnowYourCustomer.Kyc.Verifier.Contracts.Interfaces;
+using KnowYourCustomer.Kyc.Verifier.Trulioo.Verifiers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +34,9 @@ namespace KnowYourCustomer.Kyc.Host
         {
             services.AddScoped<IMrzProcessor, AbbyyMrzProcessor>();
             services.AddScoped<IKycService, KycService>();
+            services.AddScoped<IVerifier, TruliooVerifier>();
+
+            services.AddAutoMapper(typeof(MappingProfile));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

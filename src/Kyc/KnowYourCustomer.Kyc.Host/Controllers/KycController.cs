@@ -57,7 +57,7 @@ namespace KnowYourCustomer.Kyc.Host.Controllers
                 FilePath = path
             };
 
-            _kycService.ProcessPassport(model);
+            await _kycService.ProcessPassport(model);
         }
     }
 }

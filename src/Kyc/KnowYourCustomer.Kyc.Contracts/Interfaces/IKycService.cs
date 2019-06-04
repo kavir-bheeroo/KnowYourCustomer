@@ -1,9 +1,10 @@
 ﻿using KnowYourCustomer.Kyc.Contracts.Models;
+using System.Threading.Tasks;
 
 namespace KnowYourCustomer.Kyc.Contracts.Interfaces
 {
     public interface IKycService
     {
-        void ProcessPassport(KycFile model);
+        Task ProcessPassport(KycFile model);
     }
 }
