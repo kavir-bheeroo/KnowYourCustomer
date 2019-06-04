@@ -1,4 +1,5 @@
-﻿using KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Parsers;
+﻿using KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Models;
+using KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Parsers;
 using KnowYourCustomer.Kyc.MrzProcessor.Contracts.Interfaces;
 using KnowYourCustomer.Kyc.MrzProcessor.Contracts.Models;
 using System;
@@ -7,6 +8,7 @@ using System.Net;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors
 {
@@ -21,23 +23,35 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors
             //_httpClient = Guard.IsNotNull(httpClient, nameof(httpClient));
         }
 
-        public void ProcessMrzFile(MrzProcessRequest request)
+        public MrzProcessResponse ProcessMrzFile(MrzProcessRequest request)
         {
             //_httpClient.BaseAddress = new Uri("https://cloud-eu.ocrsdk.com/");
             //_httpClient.PostAsync()
 
-            string url = string.Format("{0}/processMRZ", ServerUrl);
-            WebRequest webRequest = CreatePostRequest(url);
-            WriteFileToRequest(request.FilePath, webRequest);
+            //string url = string.Format("{0}/processMRZ", ServerUrl);
+            //WebRequest webRequest = CreatePostRequest(url);
+            //WriteFileToRequest(request.FilePath, webRequest);
 
-            XDocument response = PerformRequest(webRequest);
-            var abbyyOcrTask = XmlParser.GetTaskStatus(response);
-            abbyyOcrTask = WaitForTask(abbyyOcrTask);
+            //XDocument response = PerformRequest(webRequest);
+            //var abbyyOcrTask = XmlParser.GetTaskStatus(response);
+            //abbyyOcrTask = WaitForTask(abbyyOcrTask);
+
+            //var kycFolderResponsePath = Path.Combine(Environment.CurrentDirectory, "kyc-files-result");
+            //Directory.CreateDirectory(kycFolderResponsePath);
+            //var path = Path.Combine(kycFolderResponsePath, Path.GetFileNameWithoutExtension(request.FileName) + "-result.xml");
+            //DownloadResult(abbyyOcrTask, path);
 
             var kycFolderResponsePath = Path.Combine(Environment.CurrentDirectory, "kyc-files-result");
-            Directory.CreateDirectory(kycFolderResponsePath);
-            var path = Path.Combine(kycFolderResponsePath, Path.GetFileNameWithoutExtension(request.FileName) + "-result.xml");
-            DownloadResult(abbyyOcrTask, path);
+            var path = Path.Combine(kycFolderResponsePath, "Passport01-result.xml");
+
+            var serializer = new XmlSerializer(typeof(DocumentType));
+
+            using (var reader = new StreamReader(path))
+            {
+                var deserializedResponse = (DocumentType)serializer.Deserialize(reader);
+                var dictionary = deserializedResponse.ToDictionary();
+                return new MrzProcessResponse(dictionary);
+            }
         }
 
         private OcrTask WaitForTask(OcrTask task)

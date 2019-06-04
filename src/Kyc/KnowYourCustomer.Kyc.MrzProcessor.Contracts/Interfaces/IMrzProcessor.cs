@@ -4,7 +4,7 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Contracts.Interfaces
 {
     public interface IMrzProcessor
     {
-        void ProcessMrzFile(MrzProcessRequest request);
+        MrzProcessResponse ProcessMrzFile(MrzProcessRequest request);
         OcrTask GetTaskStatus(string id);
     }
 }
