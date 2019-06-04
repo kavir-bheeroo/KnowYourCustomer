@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using KnowYourCustomer.Kyc.Contracts.Interfaces;
+using KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors;
+using KnowYourCustomer.Kyc.MrzProcessor.Contracts.Interfaces;
+using KnowYourCustomer.Kyc.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +28,9 @@ namespace KnowYourCustomer.Kyc.Host
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IMrzProcessor, AbbyyMrzProcessor>();
+            services.AddScoped<IKycService, KycService>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

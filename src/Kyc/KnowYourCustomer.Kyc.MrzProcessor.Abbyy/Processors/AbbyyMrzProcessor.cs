@@ -1,11 +1,9 @@
-﻿using KnowYourCustomer.Common;
+﻿using KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Parsers;
 using KnowYourCustomer.Kyc.MrzProcessor.Contracts.Interfaces;
 using KnowYourCustomer.Kyc.MrzProcessor.Contracts.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
@@ -14,11 +12,13 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors
 {
     public class AbbyyMrzProcessor : IMrzProcessor
     {
-        private readonly HttpClient _httpClient;
+        //private readonly HttpClient _httpClient;
 
-        public AbbyyMrzProcessor(HttpClient httpClient)
+        private const string ServerUrl = "https://cloud-eu.ocrsdk.com/";
+
+        public AbbyyMrzProcessor()//HttpClient httpClient)
         {
-            _httpClient = Guard.IsNotNull(httpClient, nameof(httpClient));
+            //_httpClient = Guard.IsNotNull(httpClient, nameof(httpClient));
         }
 
         public void ProcessMrzFile(MrzProcessRequest request)
@@ -26,28 +26,132 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors
             //_httpClient.BaseAddress = new Uri("https://cloud-eu.ocrsdk.com/");
             //_httpClient.PostAsync()
 
-            string url = string.Format("{0}/processMRZ", "https://cloud-eu.ocrsdk.com/");
+            string url = string.Format("{0}/processMRZ", ServerUrl);
             WebRequest webRequest = CreatePostRequest(url);
             WriteFileToRequest(request.FilePath, webRequest);
 
             XDocument response = PerformRequest(webRequest);
-            //OcrSdkTask serverTask = ServerXml.GetTaskStatus(response);
-            //return serverTask;
+            var abbyyOcrTask = XmlParser.GetTaskStatus(response);
+            abbyyOcrTask = WaitForTask(abbyyOcrTask);
 
-           
+            var kycFolderResponsePath = Path.Combine(Environment.CurrentDirectory, "kyc-files-result");
+            Directory.CreateDirectory(kycFolderResponsePath);
+            var path = Path.Combine(kycFolderResponsePath, Path.GetFileNameWithoutExtension(request.FileName) + "-result.xml");
+            DownloadResult(abbyyOcrTask, path);
+        }
+
+        private OcrTask WaitForTask(OcrTask task)
+        {
+            Console.WriteLine(string.Format("Task status: {0}", task.Status));
+            while (task.IsTaskActive())
+            {
+                // Note: it's recommended that your application waits
+                // at least 2 seconds before making the first getTaskStatus request
+                // and also between such requests for the same task.
+                // Making requests more often will not improve your application performance.
+                // Note: if your application queues several files and waits for them
+                // it's recommended that you use listFinishedTasks instead (which is described
+                // at https://ocrsdk.com/documentation/apireference/listFinishedTasks/).
+                System.Threading.Thread.Sleep(5000);
+                task = GetTaskStatus(task.TaskId.Id);
+                Console.WriteLine(string.Format("Task status: {0}", task.Status));
+            }
+
+            return task;
+        }
+
+        private void DownloadResult(OcrTask task, string outputFile)
+        {
+            if (task.Status != TaskStatus.Completed)
+            {
+                throw new ArgumentException("Cannot download result for not completed task");
+            }
+
+            try
+            {
+                if (File.Exists(outputFile))
+                {
+                    File.Delete(outputFile);
+                }
+
+                if (task.DownloadUrls == null || task.DownloadUrls.Count == 0)
+                {
+                    throw new ArgumentException("Cannot download task without download url");
+                }
+
+                string url = task.DownloadUrls[0];
+                DownloadUrl(url, outputFile);
+            }
+            catch (WebException e)
+            {
+                throw new Exception(e.Message, e);
+            }
+        }
+
+        public void DownloadUrl(string url, string outputFile)
+        {
+            try
+            {
+                WebRequest request = CreateGetRequest(url);
+
+                using (HttpWebResponse result = (HttpWebResponse)request.GetResponse())
+                {
+                    using (Stream stream = result.GetResponseStream())
+                    {
+                        // Write result directly to file
+                        using (Stream file = File.OpenWrite(outputFile))
+                        {
+                            CopyStream(stream, file);
+                        }
+                    }
+                }
+            }
+            catch (WebException e)
+            {
+                throw new Exception(e.Message, e);
+            }
+        }
+
+        private static void CopyStream(Stream input, Stream output)
+        {
+            byte[] buffer = new byte[8 * 1024];
+            int len;
+            while ((len = input.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                output.Write(buffer, 0, len);
+            }
         }
 
         private HttpWebRequest CreatePostRequest(string url)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
 
-            Encoding encoding = Encoding.GetEncoding("iso-8859-1");
-            string toEncode = "" + ":" + "";
-            string baseEncoded = Convert.ToBase64String(encoding.GetBytes(toEncode));
-            request.Headers.Add("Authorization", "Basic " + baseEncoded);
+            if (url.StartsWith(ServerUrl, StringComparison.InvariantCultureIgnoreCase))
+            {
+                Encoding encoding = Encoding.GetEncoding("iso-8859-1");
+                string toEncode = "know-your-customer" + ":" + "+hn8GL6l3pnUl/RGmzkobmPJ";
+                string baseEncoded = Convert.ToBase64String(encoding.GetBytes(toEncode));
+                request.Headers.Add("Authorization", "Basic " + baseEncoded);
+            }
 
             request.Method = "POST";
             request.ContentType = "application/octet-stream";
+            return request;
+        }
+
+        private HttpWebRequest CreateGetRequest(string url)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+
+            if (url.StartsWith(ServerUrl, StringComparison.InvariantCultureIgnoreCase))
+            {
+                Encoding encoding = Encoding.GetEncoding("iso-8859-1");
+                string toEncode = "know-your-customer" + ":" + "+hn8GL6l3pnUl/RGmzkobmPJ";
+                string baseEncoded = Convert.ToBase64String(encoding.GetBytes(toEncode));
+                request.Headers.Add("Authorization", "Basic " + baseEncoded);
+            }
+
+            request.Method = "GET";
             return request;
         }
 
@@ -81,7 +185,7 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors
                     return ParseAsXml((HttpWebResponse)response);
                 }
             }
-            catch (System.Net.WebException e)
+            catch (WebException e)
             {
                 //String friendlyMessage = retrieveFriendlyMessage(e);
                 //if (friendlyMessage != null)
@@ -103,6 +207,16 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors
                     return responseXml;
                 }
             }
+        }
+
+        public OcrTask GetTaskStatus(string id)
+        {
+            string url = string.Format("{0}/getTaskStatus?taskId={1}", ServerUrl, Uri.EscapeDataString(id));
+
+            WebRequest request = CreateGetRequest(url);
+            XDocument response = PerformRequest(request);
+            var serverTask = XmlParser.GetTaskStatus(response);
+            return serverTask;
         }
     }
 }

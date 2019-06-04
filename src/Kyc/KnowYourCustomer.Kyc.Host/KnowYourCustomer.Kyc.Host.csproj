@@ -14,6 +14,9 @@
     <ProjectReference Include="..\..\Common\KnowYourCustomer.Common\KnowYourCustomer.Common.csproj" />
     <ProjectReference Include="..\KnowYourCustomer.Kyc.Contracts.Public\KnowYourCustomer.Kyc.Contracts.Public.csproj" />
     <ProjectReference Include="..\KnowYourCustomer.Kyc.Contracts\KnowYourCustomer.Kyc.Contracts.csproj" />
+    <ProjectReference Include="..\KnowYourCustomer.Kyc.MrzProcessor.Abbyy\KnowYourCustomer.Kyc.MrzProcessor.Abbyy.csproj" />
+    <ProjectReference Include="..\KnowYourCustomer.Kyc.MrzProcessor.Contracts\KnowYourCustomer.Kyc.MrzProcessor.Contracts.csproj" />
+    <ProjectReference Include="..\KnowYourCustomer.Kyc\KnowYourCustomer.Kyc.csproj" />
   </ItemGroup>
 
 </Project>

@@ -39,19 +39,21 @@ namespace KnowYourCustomer.Kyc.Host.Controllers
 
         // POST api/values
         [HttpPost("{userId}")]
-        public async Task Post(KycPassportRequest request)
+        public async Task Post([FromRoute] string userId, [FromForm] IFormFile file)
         {
-            var path = Path.Combine(Environment.CurrentDirectory, request.File.FileName);
+            var kycFolderPath = Path.Combine(Environment.CurrentDirectory, "kyc-files");
+            Directory.CreateDirectory(kycFolderPath);
+            var path = Path.Combine(kycFolderPath, file.FileName);
 
             using (var fileStream = System.IO.File.Create(path))
             {
-                await request.File.CopyToAsync(fileStream);
+                await file.CopyToAsync(fileStream);
             }
 
             var model = new KycFile
             {
-                UserId = request.UserId,
-                FileName = request.File.FileName,
+                UserId = userId,
+                FileName = file.FileName,
                 FilePath = path
             };
 
