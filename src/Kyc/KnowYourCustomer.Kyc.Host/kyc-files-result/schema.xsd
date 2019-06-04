@@ -1,0 +1,92 @@
+<xs:schema xmlns="http://ocrsdk.com/schema/captureData-1.0.xsd" xmlns:tns="http://ocrsdk.com/schema/captureData-1.0.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://ocrsdk.com/schema/captureData-1.0.xsd" elementFormDefault="qualified">
+<xs:element name="document" type="tns:documentType"/>
+<xs:complexType name="documentType">
+<xs:sequence>
+<xs:choice minOccurs="0" maxOccurs="unbounded">
+<xs:element name="field" type="tns:fieldType" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="table" type="tns:tableType" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="block" type="tns:blockType" minOccurs="0" maxOccurs="unbounded"/>
+</xs:choice>
+<xs:element name="pages" type="tns:pagesType" minOccurs="0" maxOccurs="1"/>
+</xs:sequence>
+<xs:attribute name="type" type="xs:string"/>
+</xs:complexType>
+<xs:complexType name="fieldType">
+<xs:sequence>
+<xs:element name="value" type="xs:string" minOccurs="1" maxOccurs="1"/>
+<xs:element name="characters" type="tns:charactersType" minOccurs="0" maxOccurs="1"/>
+</xs:sequence>
+<xs:attribute name="type" type="xs:string"/>
+<xs:attribute name="documentPath" type="xs:string"/>
+</xs:complexType>
+<xs:complexType name="charactersType">
+<xs:sequence>
+<xs:element name="char" type="tns:suspiciousCharType" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="suspiciousCharType">
+<xs:simpleContent>
+<xs:extension base="tns:charType">
+<xs:attribute name="suspicious" type="xs:boolean" use="optional"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+<xs:simpleType name="charType">
+<xs:restriction base="xs:string">
+<xs:length value="1"/>
+</xs:restriction>
+</xs:simpleType>
+<xs:complexType name="tableType">
+<xs:sequence>
+<xs:element name="row" type="tns:rowType" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+<xs:attribute name="type" type="xs:string"/>
+<xs:attribute name="documentPath" type="xs:string"/>
+</xs:complexType>
+<xs:complexType name="rowType">
+<xs:sequence>
+<xs:element name="field" type="tns:fieldType" maxOccurs="unbounded" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="pagesType">
+<xs:sequence>
+<xs:element name="page" type="tns:pageType" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="pageType">
+<xs:sequence>
+<xs:element name="coordinatesTransformMatrix" type="tns:coordinatesTransformMatrixType" minOccurs="0" maxOccurs="1"/>
+</xs:sequence>
+<xs:attribute name="imageRotation" type="tns:rotationTypeEnum" use="required"/>
+<xs:attribute name="pageId" type="xs:string"/>
+</xs:complexType>
+<xs:complexType name="coordinatesTransformMatrixType">
+<xs:attribute name="axx" type="xs:int" use="required"/>
+<xs:attribute name="axy" type="xs:int" use="required"/>
+<xs:attribute name="ayx" type="xs:int" use="required"/>
+<xs:attribute name="ayy" type="xs:int" use="required"/>
+<xs:attribute name="bx" type="xs:int" use="required"/>
+<xs:attribute name="by" type="xs:int" use="required"/>
+</xs:complexType>
+<xs:simpleType name="rotationTypeEnum">
+<xs:restriction base="xs:string">
+<xs:enumeration value="noRotation"/>
+<xs:enumeration value="clockwise"/>
+<xs:enumeration value="counterclockwise"/>
+<xs:enumeration value="upsideDown"/>
+</xs:restriction>
+</xs:simpleType>
+<xs:complexType name="blockType">
+<xs:sequence>
+<xs:element name="rect" type="tns:rectType" minOccurs="1" maxOccurs="unbounded"/>
+</xs:sequence>
+<xs:attribute name="documentPath" type="xs:string" use="required"/>
+<xs:attribute name="pageId" type="xs:string"/>
+</xs:complexType>
+<xs:complexType name="rectType">
+<xs:attribute name="top" type="xs:int" use="required"/>
+<xs:attribute name="left" type="xs:int" use="required"/>
+<xs:attribute name="bottom" type="xs:int" use="required"/>
+<xs:attribute name="right" type="xs:int" use="required"/>
+</xs:complexType>
+</xs:schema>
