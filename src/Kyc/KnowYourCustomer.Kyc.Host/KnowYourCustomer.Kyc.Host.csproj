@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
@@ -16,6 +17,7 @@
     <ProjectReference Include="..\KnowYourCustomer.Kyc.Contracts\KnowYourCustomer.Kyc.Contracts.csproj" />
     <ProjectReference Include="..\KnowYourCustomer.Kyc.MrzProcessor.Abbyy\KnowYourCustomer.Kyc.MrzProcessor.Abbyy.csproj" />
     <ProjectReference Include="..\KnowYourCustomer.Kyc.MrzProcessor.Contracts\KnowYourCustomer.Kyc.MrzProcessor.Contracts.csproj" />
+    <ProjectReference Include="..\KnowYourCustomer.Kyc.Verifier.Trulioo\KnowYourCustomer.Kyc.Verifier.Trulioo.csproj" />
     <ProjectReference Include="..\KnowYourCustomer.Kyc\KnowYourCustomer.Kyc.csproj" />
   </ItemGroup>
 
