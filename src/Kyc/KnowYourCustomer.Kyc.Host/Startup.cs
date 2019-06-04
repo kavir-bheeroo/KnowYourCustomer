@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using KnowYourCustomer.Kyc.Contracts.Interfaces;
 using KnowYourCustomer.Kyc.Mappers;
 using KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors;
@@ -15,8 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using System;
 
 namespace KnowYourCustomer.Kyc.Host
 {
@@ -34,9 +29,15 @@ namespace KnowYourCustomer.Kyc.Host
         {
             services.AddScoped<IMrzProcessor, AbbyyMrzProcessor>();
             services.AddScoped<IKycService, KycService>();
-            services.AddScoped<IVerifier, TruliooVerifier>();
+            services.AddScoped<IVerifier, TruliooApiVerifier>();
 
             services.AddAutoMapper(typeof(MappingProfile));
+
+            services.AddHttpClient("trulioo", c =>
+            {
+                c.BaseAddress = new Uri("https://gateway.trulioo.com/");
+                c.DefaultRequestHeaders.Add("x-trulioo-api-key", "58dacf1c48b6f2828dd6f46e7054415b");
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

@@ -4,17 +4,20 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Trulioo.Client.V1;
+using Trulioo.Client.V1.Exceptions;
 using Trulioo.Client.V1.Model;
 
 namespace KnowYourCustomer.Kyc.Verifier.Trulioo.Verifiers
 {
-    public class TruliooVerifier : IVerifier
+    public class TruliooSdkVerifier : IVerifier
     {
         public async Task<bool> VerifyAsync(IdentityVerificationRequest request)
         {
-            var truliooClient = new TruliooApiClient("", "");
+            var truliooClient = new TruliooApiClient("raiuniverse", "test1234!");
 
             var countryList = await truliooClient.Configuration.GetCountryCodesAsync("Identity Verification");
+
+            // todo: Map country iso 3 to country iso 2 code. Abbyy returns iso 3 and Trulioo needs iso 2.
             var countryCode = countryList.FirstOrDefault(c => c.Equals(request.UserInfo.Nationality));
 
             if (countryCode == null)

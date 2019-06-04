@@ -1,7 +1,9 @@
 # KnowYourCustomer
 
 - Passport biometric page is sent to Abbyy OCR and an XML response is received back.
-- Send parsed user details from Abbyy to a KYC check at Trulioo
+- Send parsed user details from Abbyy to a KYC check at Trulioo.
+- AutoMapper used for mapping.
+- IHttpClientFactory used to create HttpClient objects.
 
 todo:
 - Use configuration settings to flip call to Abbyy.
@@ -15,6 +17,7 @@ todo:
 - Add Caching -- cache country code in Verifier
 - Create custom exceptions that map to specific HTTP codes.
 - Add Swagger
+- Strategy pattern based on appsettings to choose trulioo verifier implementation.
 
 
 Generated C# classes from Abbyy OCR XSD
