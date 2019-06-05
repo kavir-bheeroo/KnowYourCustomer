@@ -7,7 +7,7 @@ namespace KnowYourCustomer.Identity.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public DbSet<ApplicationUser> User { get; set; }
+        public DbSet<ApplicationUser> Users { get; set; }
         public DbSet<IdentityUserClaim<Guid>> IdentityUserClaims { get; set; }
         public DbSet<IdentityUserRole<Guid>> IdentityUserRoles { get; set; }
         public DbSet<IdentityRole<Guid>> IdentityRoles { get; set; }

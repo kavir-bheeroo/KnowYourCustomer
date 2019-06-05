@@ -4,6 +4,8 @@
 - Send parsed user details from Abbyy to a KYC check at Trulioo.
 - AutoMapper used for mapping.
 - IHttpClientFactory used to create HttpClient objects.
+- Registration and Login using ASP.NET Core Identity.
+- API Authentication using IdentityServer4.
 
 todo:
 - Use configuration settings to flip call to Abbyy.
@@ -17,7 +19,7 @@ todo:
 - Add Caching -- cache country code in Verifier
 - Create custom exceptions that map to specific HTTP codes.
 - Add Swagger
-- Strategy pattern based on appsettings to choose trulioo verifier implementation.
+- Strategy pattern based on appsettings to choose Trulioo verifier implementation.
 
 
 Generated C# classes from Abbyy OCR XSD
@@ -26,3 +28,4 @@ Generated C# classes from Abbyy OCR XSD
 Generated EF Core migrations for IdentityServer
 - dotnet ef migrations add InitialIdentityServerPersistedGrantDbMigration -c PersistedGrantDbContext -o Data/Migrations/IdentityServer/PersistedGrantDb
 - dotnet ef migrations add InitialIdentityServerConfigurationDbMigration -c ConfigurationDbContext -o Data/Migrations/IdentityServer/ConfigurationDb
+- dotnet ef migrations add InitialApplicationDbMigration -c ApplicationDbContext -o Data/Migrations/Identity/ApplicationDb

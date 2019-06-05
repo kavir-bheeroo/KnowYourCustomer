@@ -50,7 +50,7 @@ namespace KnowYourCustomer.Identity.Data.Migrations.Identity.ApplicationDb
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -73,7 +73,7 @@ namespace KnowYourCustomer.Identity.Data.Migrations.Identity.ApplicationDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
         }
 
@@ -89,7 +89,7 @@ namespace KnowYourCustomer.Identity.Data.Migrations.Identity.ApplicationDb
                 name: "IdentityUserRoles");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Users");
         }
     }
 }

@@ -1,10 +1,19 @@
 ﻿using IdentityServer4.Models;
+using KnowYourCustomer.Identity.Models;
 using System.Collections.Generic;
 
 namespace KnowYourCustomer.Identity.Configuration
 {
     public class Config
     {
+        public static IEnumerable<ApplicationUser> GetUsers()
+        {
+            return new List<ApplicationUser>
+            {
+                new ApplicationUser { UserName = "test", PasswordHash = "Password123".Sha256() }
+            };
+        }
+
         // ApiResources define the apis in your system
         public static IEnumerable<ApiResource> GetApis()
         {
@@ -33,9 +42,25 @@ namespace KnowYourCustomer.Identity.Configuration
                 new Client
                 {
                     ClientId = "postman",
-                    ClientName = "Postman application for testing",
+                    ClientName = "Postman tester",
                     // no interactive user, use the clientid/secret for authentication
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
+
+                    // secret for authentication
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    // scopes that client has access to
+                    AllowedScopes = { "kyc" }
+                },
+                new Client
+                {
+                    ClientId = "postman.ro",
+                    ClientName = "Postman RO tester",
+                    // no interactive user, use the clientid/secret for authentication
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
 
                     // secret for authentication
                     ClientSecrets =

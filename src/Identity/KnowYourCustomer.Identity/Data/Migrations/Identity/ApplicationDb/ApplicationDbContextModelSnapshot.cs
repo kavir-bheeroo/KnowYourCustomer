@@ -58,7 +58,7 @@ namespace KnowYourCustomer.Identity.Data.Migrations.Identity.ApplicationDb
 
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>

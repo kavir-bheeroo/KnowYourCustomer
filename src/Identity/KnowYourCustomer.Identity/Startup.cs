@@ -94,39 +94,54 @@ namespace KnowYourCustomer.Identity
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
+                // Migrate ApplicationDbContext
+                var applicationDbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                applicationDbContext.Database.Migrate();
+
+                if (!applicationDbContext.Users.Any())
+                {
+                    foreach (var user in Config.GetUsers())
+                    {
+                        applicationDbContext.Users.Add(user);
+                    }
+
+                    applicationDbContext.SaveChanges();
+                }
+
+                // Migrate PersistedGrantDbContext
                 serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
 
-                var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-                context.Database.Migrate();
+                // Migrate ConfigurationDbContext
+                var configurationDbContext = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+                configurationDbContext.Database.Migrate();
 
-                if (!context.Clients.Any())
+                if (!configurationDbContext.Clients.Any())
                 {
                     foreach (var client in Config.GetClients())
                     {
-                        context.Clients.Add(client.ToEntity());
+                        configurationDbContext.Clients.Add(client.ToEntity());
                     }
 
-                    context.SaveChanges();
+                    configurationDbContext.SaveChanges();
                 }
 
-                if (!context.IdentityResources.Any())
+                if (!configurationDbContext.IdentityResources.Any())
                 {
                     foreach (var resource in Config.GetResources())
                     {
-                        context.IdentityResources.Add(resource.ToEntity());
+                        configurationDbContext.IdentityResources.Add(resource.ToEntity());
                     }
-                    context.SaveChanges();
+                    configurationDbContext.SaveChanges();
                 }
 
-                if (!context.ApiResources.Any())
+                if (!configurationDbContext.ApiResources.Any())
                 {
                     foreach (var api in Config.GetApis())
                     {
-                        context.ApiResources.Add(api.ToEntity());
+                        configurationDbContext.ApiResources.Add(api.ToEntity());
                     }
 
-                    context.SaveChanges();
+                    configurationDbContext.SaveChanges();
                 }
             }
         }
