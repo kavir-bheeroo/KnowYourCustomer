@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using KnowYourCustomer.Common;
+﻿using KnowYourCustomer.Common;
+using KnowYourCustomer.Common.Extensions;
 using KnowYourCustomer.Kyc.Contracts.Interfaces;
 using KnowYourCustomer.Kyc.Contracts.Models;
-using KnowYourCustomer.Kyc.Contracts.Public.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace KnowYourCustomer.Kyc.Host.Controllers
 {
@@ -23,24 +22,17 @@ namespace KnowYourCustomer.Kyc.Host.Controllers
             _kycService = Guard.IsNotNull(kycService, nameof(kycService));
         }
 
-        //// GET api/values
-        //[HttpGet]
-        //public ActionResult<IEnumerable<string>> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
-
-        //// GET api/values/5
-        //[HttpGet("{id}")]
-        //public ActionResult<string> Get(int id)
-        //{
-        //    return "value";
-        //}
-
-        // POST api/values
-        [HttpPost("{userId}")]
-        public async Task Post([FromRoute] string userId, [FromForm] IFormFile file)
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Post([FromForm] IFormFile file)
         {
+            var userId = HttpContext.User.GetUserId();
+
+            if (userId == null)
+            {
+                throw new UnauthorizedAccessException("'sub' claim is missing in token.");
+            }
+
             var kycFolderPath = Path.Combine(Environment.CurrentDirectory, "kyc-files");
             Directory.CreateDirectory(kycFolderPath);
             var path = Path.Combine(kycFolderPath, file.FileName);
@@ -58,6 +50,7 @@ namespace KnowYourCustomer.Kyc.Host.Controllers
             };
 
             await _kycService.ProcessPassport(model);
+            return Ok();
         }
     }
 }

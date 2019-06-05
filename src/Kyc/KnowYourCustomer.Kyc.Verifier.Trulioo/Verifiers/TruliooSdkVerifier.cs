@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Trulioo.Client.V1;
-using Trulioo.Client.V1.Exceptions;
 using Trulioo.Client.V1.Model;
 
 namespace KnowYourCustomer.Kyc.Verifier.Trulioo.Verifiers

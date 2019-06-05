@@ -42,6 +42,7 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors
             //DownloadResult(abbyyOcrTask, path);
 
             var kycFolderResponsePath = Path.Combine(Environment.CurrentDirectory, "kyc-files-result");
+            Directory.CreateDirectory(kycFolderResponsePath);
             var path = Path.Combine(kycFolderResponsePath, "Passport01-result.xml");
 
             var serializer = new XmlSerializer(typeof(DocumentType));

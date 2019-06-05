@@ -40,6 +40,14 @@ namespace KnowYourCustomer.Kyc.Host
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = Configuration.GetValue<string>("IdentityServerUrl");
+                    options.RequireHttpsMetadata = false;
+                    options.ApiName = "kyc";
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +58,7 @@ namespace KnowYourCustomer.Kyc.Host
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseAuthentication();
             app.UseMvc();
         }
     }
