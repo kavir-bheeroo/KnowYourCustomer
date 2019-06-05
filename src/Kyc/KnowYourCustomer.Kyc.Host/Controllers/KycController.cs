@@ -7,6 +7,7 @@ using KnowYourCustomer.Common;
 using KnowYourCustomer.Kyc.Contracts.Interfaces;
 using KnowYourCustomer.Kyc.Contracts.Models;
 using KnowYourCustomer.Kyc.Contracts.Public.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,6 +39,7 @@ namespace KnowYourCustomer.Kyc.Host.Controllers
         //}
 
         // POST api/values
+        [Authorize]
         [HttpPost("{userId}")]
         public async Task Post([FromRoute] string userId, [FromForm] IFormFile file)
         {

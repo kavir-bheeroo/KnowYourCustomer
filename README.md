@@ -22,3 +22,7 @@ todo:
 
 Generated C# classes from Abbyy OCR XSD
 - xsd.exe /c 'C:\kavir\KnowYourCustomer\src\Kyc\KnowYourCustomer.Kyc.MrzProcessor.Abbyy\Schemas\Document.xsd' /outputdir:C:\
+
+Generated EF Core migrations for IdentityServer
+- dotnet ef migrations add InitialIdentityServerPersistedGrantDbMigration -c PersistedGrantDbContext -o Data/Migrations/IdentityServer/PersistedGrantDb
+- dotnet ef migrations add InitialIdentityServerConfigurationDbMigration -c ConfigurationDbContext -o Data/Migrations/IdentityServer/ConfigurationDb
