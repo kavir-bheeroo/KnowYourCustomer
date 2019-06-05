@@ -11,6 +11,7 @@ services:
       - "ConnectionStrings:IdentityServerDb=Server=sqlserver;Database=KnowYourCustomer.IdentityDb;User Id=sa;Password=Pass_w0rd;Application Name=Kyc.Identity"
     depends_on:
       - sqlserver
+    restart: on-failure
 
   kyc:
     image: ${DOCKER_REGISTRY-}kyc
@@ -24,6 +25,7 @@ services:
     depends_on:
       - identity
       - sqlserver
+    restart: on-failure
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu

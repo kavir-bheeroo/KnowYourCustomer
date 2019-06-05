@@ -1,8 +1,12 @@
 ﻿using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using KnowYourCustomer.Identity.Configuration;
+using KnowYourCustomer.Identity.Data;
+using KnowYourCustomer.Identity.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,10 +33,17 @@ namespace KnowYourCustomer.Identity
             var connectionString = Configuration.GetConnectionString("IdentityServerDb");
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
+            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
             // Configure Identity Server
             services.AddIdentityServer(x => { x.IssuerUri = "null"; })  // Use null if a common domain name is not available for the Identity Server
                 //.AddCertificateFromFile(HostingEnvironment, Configuration)
                 .AddDeveloperSigningCredential()
+                .AddAspNetIdentity<ApplicationUser>()
                 // this adds the config data from DB (clients, resources)
                 .AddConfigurationStore(options =>
                 {
@@ -59,6 +70,8 @@ namespace KnowYourCustomer.Identity
                     options.EnableTokenCleanup = true;
                     options.TokenCleanupInterval = 30;
                 });
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,6 +86,7 @@ namespace KnowYourCustomer.Identity
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseMvc();
             app.UseIdentityServer();
         }
 
@@ -80,7 +94,9 @@ namespace KnowYourCustomer.Identity
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
+                serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
                 serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+
                 var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
                 context.Database.Migrate();
 
