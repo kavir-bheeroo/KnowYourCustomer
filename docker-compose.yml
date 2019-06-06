@@ -22,6 +22,7 @@ services:
       - "5001:80"
     environment:
       - "IdentityServerUrl=http://identity"
+      - "ConnectionStrings:KycDb=Server=sqlserver;Database=KnowYourCustomer.KycDb;User Id=sa;Password=Pass_w0rd;Application Name=Kyc.Host"
     depends_on:
       - identity
       - sqlserver

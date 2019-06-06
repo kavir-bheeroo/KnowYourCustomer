@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
 using KnowYourCustomer.Kyc.Contracts.Interfaces;
+using KnowYourCustomer.Kyc.Data.Contracts.Interfaces;
+using KnowYourCustomer.Kyc.Data.EfCore;
+using KnowYourCustomer.Kyc.Data.EfCore.Repositories;
 using KnowYourCustomer.Kyc.Mappers;
 using KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors;
 using KnowYourCustomer.Kyc.MrzProcessor.Contracts.Interfaces;
@@ -9,6 +12,7 @@ using KnowYourCustomer.Kyc.Verifier.Trulioo.Verifiers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -27,6 +31,25 @@ namespace KnowYourCustomer.Kyc.Host
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = Configuration.GetConnectionString("KycDb");
+
+            services
+                .AddEntityFrameworkSqlServer()
+                .AddDbContext<KycDbContext>(options =>
+                {
+                    options.UseSqlServer(connectionString,
+                        sqlOptions =>
+                        {
+                            sqlOptions.MigrationsAssembly(typeof(Startup).Assembly.GetName().Name);
+                            sqlOptions.EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
+                        });
+                });
+
+            CreateDatabase(services.BuildServiceProvider());
+
+            services.AddScoped<IKycRepository, KycRepository>();
+            services.AddScoped<IKycDocumentRepository, KycDocumentRepository>();
+
             services.AddScoped<IMrzProcessor, AbbyyMrzProcessor>();
             services.AddScoped<IKycService, KycService>();
             services.AddScoped<IVerifier, TruliooApiVerifier>();
@@ -60,6 +83,17 @@ namespace KnowYourCustomer.Kyc.Host
 
             app.UseAuthentication();
             app.UseMvc();
+        }
+
+        public void CreateDatabase(IServiceProvider serviceProvider)
+        {
+            using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                using (var db = serviceProvider.GetService<KycDbContext>())
+                {
+                    db.Database.Migrate();
+                }
+            }
         }
     }
 }
