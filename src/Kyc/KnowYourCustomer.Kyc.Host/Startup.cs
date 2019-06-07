@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using KnowYourCustomer.Common.Messaging.Kafka.Extensions;
 using KnowYourCustomer.Kyc.Contracts.Interfaces;
+using KnowYourCustomer.Kyc.Contracts.Models;
 using KnowYourCustomer.Kyc.Data.Contracts.Interfaces;
 using KnowYourCustomer.Kyc.Data.EfCore;
 using KnowYourCustomer.Kyc.Data.EfCore.Repositories;
@@ -55,7 +57,9 @@ namespace KnowYourCustomer.Kyc.Host
             services.AddScoped<IKycService, KycService>();
             services.AddScoped<IVerifier, TruliooApiVerifier>();
 
-            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddKafkaProducer<string, InitiateKycResponseModel>(Configuration);
+
+            services.AddAutoMapper(typeof(MappingProfile), typeof(Mappers.MappingProfile));
 
             services.AddHttpClient("trulioo", c =>
             {

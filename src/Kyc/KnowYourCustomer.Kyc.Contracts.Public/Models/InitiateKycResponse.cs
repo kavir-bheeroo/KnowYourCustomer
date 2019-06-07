@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace KnowYourCustomer.Kyc.Contracts.Models
+namespace KnowYourCustomer.Kyc.Contracts.Public.Models
 {
-    public class InitiateKycResponseModel
+    public class InitiateKycResponse
     {
         public Guid UserId { get; set; }
         public string FileName { get; set; }

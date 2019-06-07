@@ -15,6 +15,9 @@ namespace KnowYourCustomer.Kyc.Mappers
             CreateMap<InitiateKycRequestModel, MrzSubmitRequest>();
             CreateMap<CheckMrzStatusRequestModel, MrzStatusRequest>();
             CreateMap<MrzStatusResponse, CheckMrzStatusResponseModel>();
+
+            CreateMap<MrzProcessor.Contracts.Models.UserInfo, Contracts.Models.UserInfo>();
+            CreateMap<MrzProcessor.Contracts.Models.PassportInfo, Contracts.Models.PassportInfo>();
         }
     }
 }

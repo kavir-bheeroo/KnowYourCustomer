@@ -9,6 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\KnowYourCustomer.Common.Messaging.Kafka\KnowYourCustomer.Common.Messaging.Kafka.csproj" />
+    <ProjectReference Include="..\..\Common\KnowYourCustomer.Common.Messaging\KnowYourCustomer.Common.Messaging.csproj" />
     <ProjectReference Include="..\..\Common\KnowYourCustomer.Common\KnowYourCustomer.Common.csproj" />
     <ProjectReference Include="..\KnowYourCustomer.Kyc.Contracts\KnowYourCustomer.Kyc.Contracts.csproj" />
     <ProjectReference Include="..\KnowYourCustomer.Kyc.Data.Contracts\KnowYourCustomer.Kyc.Data.Contracts.csproj" />

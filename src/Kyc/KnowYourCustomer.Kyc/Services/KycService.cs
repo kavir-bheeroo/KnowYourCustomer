@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KnowYourCustomer.Common;
+using KnowYourCustomer.Common.Messaging.Interfaces;
+using KnowYourCustomer.Common.Messaging.Kafka;
 using KnowYourCustomer.Kyc.Contracts.Interfaces;
 using KnowYourCustomer.Kyc.Contracts.Models;
 using KnowYourCustomer.Kyc.Data.Contracts.Entities;
@@ -22,13 +24,16 @@ namespace KnowYourCustomer.Kyc.Services
         private readonly IVerifier _verifier;
         private readonly IMapper _mapper;
 
+        private readonly IKafkaProducer<string, InitiateKycResponseModel> _kafkaProducer;
+
         public KycService(
             IKycRepository kycRepository,
             IKycDocumentRepository kycDocumentRepository,
             IKycOperationRepository kycOperationRepository,
             IMrzProcessor mrzProcessor,
             IVerifier verifier,
-            IMapper mapper)
+            IMapper mapper,
+            IKafkaProducer<string, InitiateKycResponseModel> kafkaProducer)
         {
             _kycRepository = Guard.IsNotNull(kycRepository, nameof(kycRepository));
             _kycDocumentRepository = Guard.IsNotNull(kycDocumentRepository, nameof(kycDocumentRepository));
@@ -37,6 +42,7 @@ namespace KnowYourCustomer.Kyc.Services
             _mrzProcessor = Guard.IsNotNull(mrzProcessor, nameof(mrzProcessor));
             _verifier = Guard.IsNotNull(verifier, nameof(verifier));
             _mapper = Guard.IsNotNull(mapper, nameof(mapper));
+            _kafkaProducer = Guard.IsNotNull(kafkaProducer, nameof(kafkaProducer));
         }
 
         public async Task<InitiateKycResponseModel> InitiateKyc(InitiateKycRequestModel requestModel)
@@ -52,6 +58,16 @@ namespace KnowYourCustomer.Kyc.Services
             var responseModel = _mapper.Map<InitiateKycResponseModel>(requestModel);
             responseModel.KycId = kycEntity.Id;
             responseModel.MrzTaskId = mrzSubmitResponse.TaskId;
+
+            // Send Kafka Message
+            var kafkaMessage = new KafkaMessage<string, InitiateKycResponseModel>
+            {
+                Key = requestModel.UserId.ToString(),
+                Value = responseModel,
+                MessageType = nameof(InitiateKycResponseModel)
+            };
+
+            await _kafkaProducer.ProduceAsync(kafkaMessage);
 
             return responseModel;
             //var identityVerificationRequest = new IdentityVerificationRequest

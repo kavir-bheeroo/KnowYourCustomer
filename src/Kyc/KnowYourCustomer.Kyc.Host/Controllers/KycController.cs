@@ -1,7 +1,9 @@
-﻿using KnowYourCustomer.Common;
+﻿using AutoMapper;
+using KnowYourCustomer.Common;
 using KnowYourCustomer.Common.Extensions;
 using KnowYourCustomer.Kyc.Contracts.Interfaces;
 using KnowYourCustomer.Kyc.Contracts.Models;
+using KnowYourCustomer.Kyc.Contracts.Public.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,15 +18,17 @@ namespace KnowYourCustomer.Kyc.Host.Controllers
     public class KycController : ControllerBase
     {
         private readonly IKycService _kycService;
+        private readonly IMapper _mapper;
 
-        public KycController(IKycService kycService)
+        public KycController(IKycService kycService, IMapper mapper)
         {
             _kycService = Guard.IsNotNull(kycService, nameof(kycService));
+            _mapper = Guard.IsNotNull(mapper, nameof(mapper));
         }
 
         [Authorize]
         [HttpPost("initiate")]
-        public async Task<IActionResult> Initiate([FromForm] IFormFile file)
+        public async Task<ActionResult<InitiateKycResponse>> Initiate([FromForm] IFormFile file)
         {
             var userId = HttpContext.User.GetUserId();
 
@@ -49,8 +53,21 @@ namespace KnowYourCustomer.Kyc.Host.Controllers
                 FilePath = path
             };
 
-            await _kycService.InitiateKyc(model);
-            return Ok();
+            var result = await _kycService.InitiateKyc(model);
+            var response = _mapper.Map<InitiateKycResponse>(result);
+
+            return Ok(response);
+        }
+
+        //[Authorize]
+        [HttpPost("checkmrzstatus")]
+        public async Task<ActionResult<CheckMrzStatusResponse>> CheckMrzStatus(CheckMrzStatusRequest request)
+        {
+            var model = _mapper.Map<CheckMrzStatusRequestModel>(request);
+            var result = await _kycService.CheckMrzTaskStatus(model);
+            var response = _mapper.Map<CheckMrzStatusResponse>(result);
+
+            return Ok(response);
         }
     }
 }
