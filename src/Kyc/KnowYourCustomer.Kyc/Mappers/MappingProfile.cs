@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KnowYourCustomer.Kyc.Contracts.Models;
 using KnowYourCustomer.Kyc.MrzProcessor.Contracts.Models;
+using KnowYourCustomer.Kyc.Verifier.Contracts.Models;
 
 namespace KnowYourCustomer.Kyc.Mappers
 {
@@ -14,10 +15,15 @@ namespace KnowYourCustomer.Kyc.Mappers
 
             CreateMap<InitiateKycRequestModel, MrzSubmitRequest>();
             CreateMap<CheckMrzStatusRequestModel, MrzStatusRequest>();
+
+            CreateMap<MrzProcessor.Contracts.Models.UserInfo, UserInfoModel>();
+            CreateMap<MrzProcessor.Contracts.Models.PassportInfo, PassportInfoModel>();
             CreateMap<MrzStatusResponse, CheckMrzStatusResponseModel>();
 
-            CreateMap<MrzProcessor.Contracts.Models.UserInfo, Contracts.Models.UserInfo>();
-            CreateMap<MrzProcessor.Contracts.Models.PassportInfo, Contracts.Models.PassportInfo>();
+            CreateMap<VerificationRequestModel, IdentityVerificationRequest>();
+            CreateMap<UserInfoModel, Verifier.Contracts.Models.UserInfo>().ReverseMap();
+            CreateMap<PassportInfoModel, Verifier.Contracts.Models.PassportInfo>().ReverseMap();
+            CreateMap<IdentityVerificationRequest, VerificationResponseModel>();
         }
     }
 }

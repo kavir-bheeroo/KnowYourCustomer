@@ -7,5 +7,6 @@ namespace KnowYourCustomer.Kyc.Contracts.Interfaces
     {
         Task<InitiateKycResponseModel> InitiateKyc(InitiateKycRequestModel requestModel);
         Task<CheckMrzStatusResponseModel> CheckMrzTaskStatus(CheckMrzStatusRequestModel requestModel);
+        Task<VerificationResponseModel> VerifyIdentity(VerificationRequestModel requestModel);
     }
 }

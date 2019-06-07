@@ -15,7 +15,9 @@ namespace KnowYourCustomer.Common.Messaging.Kafka.Producers
         private readonly IKafkaOptions _kafkaOptions;
         private readonly ILogger<KafkaProducer<TKey, TValue>> _logger;
 
-        public KafkaProducer(IKafkaOptions kafkaOptions, ILogger<KafkaProducer<TKey, TValue>> logger)
+        public string Topic { get; set; }
+
+        internal KafkaProducer(IKafkaOptions kafkaOptions, ILogger<KafkaProducer<TKey, TValue>> logger)
         {
             _kafkaOptions = Guard.IsNotNull(kafkaOptions, nameof(kafkaOptions));
             _logger = Guard.IsNotNull(logger, nameof(logger));
@@ -56,7 +58,12 @@ namespace KnowYourCustomer.Common.Messaging.Kafka.Producers
         {
             try
             {
-                var deliveryReport = await _producer.ProduceAsync(_kafkaOptions.Topic, message);
+                if(Topic == null)
+                {
+                    throw new Exception("Topic cannot be null");
+                }
+
+                var deliveryReport = await _producer.ProduceAsync(Topic, message);
                 _logger.LogInformation($"Delivered 'key: { deliveryReport.Key }' - '{ deliveryReport.Value }' to '{ deliveryReport.TopicPartitionOffset }' with offset '{ deliveryReport.Offset }'");
             }
             catch (ProduceException<TKey, TValue> e)

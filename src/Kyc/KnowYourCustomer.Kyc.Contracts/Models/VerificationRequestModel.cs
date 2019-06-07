@@ -2,7 +2,7 @@
 
 namespace KnowYourCustomer.Kyc.Contracts.Models
 {
-    public class CheckMrzStatusResponseModel
+    public class VerificationRequestModel
     {
         public Guid UserId { get; set; }
         public Guid KycId { get; set; }

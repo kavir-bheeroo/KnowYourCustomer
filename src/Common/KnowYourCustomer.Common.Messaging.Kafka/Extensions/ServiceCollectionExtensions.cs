@@ -1,6 +1,5 @@
 ﻿using KnowYourCustomer.Common.Messaging.Interfaces;
-using KnowYourCustomer.Common.Messaging.Kafka.Consumers;
-using KnowYourCustomer.Common.Messaging.Kafka.Producers;
+using KnowYourCustomer.Common.Messaging.Kafka.Factories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -9,7 +8,7 @@ namespace KnowYourCustomer.Common.Messaging.Kafka.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddKafkaProducer<TKey, TValue>(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddKafkaProducer<TKey, TValue>(this IServiceCollection services, IConfiguration configuration, string topic)
         {
             Guard.IsNotNull(services, nameof(services));
 
@@ -19,12 +18,13 @@ namespace KnowYourCustomer.Common.Messaging.Kafka.Extensions
                 .AddOptions()
                 .TryAddSingleton<IKafkaOptions>(sp => kafkaOptions);
 
-            services.TryAddSingleton<IKafkaProducer<TKey, TValue>, KafkaProducer<TKey, TValue>>();
+            services.TryAddSingleton<IProducerFactory, ProducerFactory>();
+            services.TryAddSingleton(x => x.GetRequiredService<IProducerFactory>().Create<TKey, TValue>(kafkaOptions, topic));
 
             return services;
         }
 
-        public static IServiceCollection AddKafkaConsumer<TKey, TValue>(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddKafkaConsumer<TKey, TValue>(this IServiceCollection services, IConfiguration configuration, string topic)
         {
             Guard.IsNotNull(services, nameof(services));
 
@@ -34,7 +34,8 @@ namespace KnowYourCustomer.Common.Messaging.Kafka.Extensions
                 .AddOptions()
                 .TryAddSingleton<IKafkaOptions>(sp => kafkaOptions);
 
-            services.TryAddSingleton<IKafkaConsumer<TKey, TValue>, KafkaConsumer<TKey, TValue>>();
+            services.TryAddSingleton<IConsumerFactory, ConsumerFactory>();
+            services.TryAddSingleton(x => x.GetRequiredService<IConsumerFactory>().Create<TKey, TValue>(kafkaOptions, topic));
 
             return services;
         }

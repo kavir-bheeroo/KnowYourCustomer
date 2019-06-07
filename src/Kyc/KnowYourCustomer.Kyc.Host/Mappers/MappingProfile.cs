@@ -12,8 +12,11 @@ namespace KnowYourCustomer.Kyc.Host.Mappers
             CreateMap<CheckMrzStatusRequest, CheckMrzStatusRequestModel>();
             CreateMap<CheckMrzStatusResponseModel, CheckMrzStatusResponse>();
 
-            CreateMap<Contracts.Models.UserInfo, Contracts.Public.Models.UserInfo>();
-            CreateMap<Contracts.Models.PassportInfo, Contracts.Public.Models.PassportInfo>();
+            CreateMap<UserInfoModel, UserInfo>().ReverseMap();
+            CreateMap<PassportInfoModel, PassportInfo>().ReverseMap();
+
+            CreateMap<VerificationRequest, VerificationRequestModel>();
+            CreateMap<VerificationResponseModel, VerificationResponse>();
         }
     }
 }

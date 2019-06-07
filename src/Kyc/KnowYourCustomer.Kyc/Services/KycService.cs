@@ -10,6 +10,8 @@ using KnowYourCustomer.Kyc.Data.Contracts.Interfaces;
 using KnowYourCustomer.Kyc.MrzProcessor.Contracts.Interfaces;
 using KnowYourCustomer.Kyc.MrzProcessor.Contracts.Models;
 using KnowYourCustomer.Kyc.Verifier.Contracts.Interfaces;
+using KnowYourCustomer.Kyc.Verifier.Contracts.Models;
+using System;
 using System.Threading.Tasks;
 
 namespace KnowYourCustomer.Kyc.Services
@@ -24,7 +26,9 @@ namespace KnowYourCustomer.Kyc.Services
         private readonly IVerifier _verifier;
         private readonly IMapper _mapper;
 
-        private readonly IKafkaProducer<string, InitiateKycResponseModel> _kafkaProducer;
+        private readonly IKafkaProducer<string, InitiateKycResponseModel> _initiateKycProducer;
+        private readonly IKafkaProducer<string, CheckMrzStatusResponseModel> _checkMrzStatusProducer;
+        private readonly IKafkaProducer<string, VerificationResponseModel> _verificationProducer;
 
         public KycService(
             IKycRepository kycRepository,
@@ -33,7 +37,9 @@ namespace KnowYourCustomer.Kyc.Services
             IMrzProcessor mrzProcessor,
             IVerifier verifier,
             IMapper mapper,
-            IKafkaProducer<string, InitiateKycResponseModel> kafkaProducer)
+            IKafkaProducer<string, InitiateKycResponseModel> initiateKycProducer,
+            IKafkaProducer<string, CheckMrzStatusResponseModel> checkMrzStatusProducer,
+            IKafkaProducer<string, VerificationResponseModel> verificationProducer)
         {
             _kycRepository = Guard.IsNotNull(kycRepository, nameof(kycRepository));
             _kycDocumentRepository = Guard.IsNotNull(kycDocumentRepository, nameof(kycDocumentRepository));
@@ -42,7 +48,10 @@ namespace KnowYourCustomer.Kyc.Services
             _mrzProcessor = Guard.IsNotNull(mrzProcessor, nameof(mrzProcessor));
             _verifier = Guard.IsNotNull(verifier, nameof(verifier));
             _mapper = Guard.IsNotNull(mapper, nameof(mapper));
-            _kafkaProducer = Guard.IsNotNull(kafkaProducer, nameof(kafkaProducer));
+
+            _initiateKycProducer = Guard.IsNotNull(initiateKycProducer, nameof(initiateKycProducer));
+            _checkMrzStatusProducer = Guard.IsNotNull(checkMrzStatusProducer, nameof(checkMrzStatusProducer));
+            _verificationProducer = Guard.IsNotNull(verificationProducer, nameof(verificationProducer));
         }
 
         public async Task<InitiateKycResponseModel> InitiateKyc(InitiateKycRequestModel requestModel)
@@ -62,23 +71,14 @@ namespace KnowYourCustomer.Kyc.Services
             // Send Kafka Message
             var kafkaMessage = new KafkaMessage<string, InitiateKycResponseModel>
             {
-                Key = requestModel.UserId.ToString(),
+                Key = Guid.NewGuid().ToString(),
                 Value = responseModel,
                 MessageType = nameof(InitiateKycResponseModel)
             };
 
-            await _kafkaProducer.ProduceAsync(kafkaMessage);
+            await _initiateKycProducer.ProduceAsync(kafkaMessage);
 
             return responseModel;
-            //var identityVerificationRequest = new IdentityVerificationRequest
-            //{
-            //    UserInfo = _mapper.Map<UserInfo>(mrzSubmitResponse.UserInfo),
-            //    PassportInfo = _mapper.Map<PassportInfo>(mrzSubmitResponse.PassportInfo)
-            //};
-
-            //var verified = await _verifier.VerifyAsync(identityVerificationRequest);
-            //int x = 1;
-            //
         }
 
         public async Task<CheckMrzStatusResponseModel> CheckMrzTaskStatus(CheckMrzStatusRequestModel requestModel)
@@ -91,6 +91,48 @@ namespace KnowYourCustomer.Kyc.Services
             await _kycRepository.UpdateAsync(entity);
 
             var responseModel = _mapper.Map<CheckMrzStatusResponseModel>(mrzStatusResponse);
+            responseModel.UserId = requestModel.UserId;
+            responseModel.KycId = requestModel.KycId;
+
+            if (mrzStatusResponse.IsMrzCompleted)
+            {
+                // Send Kafka Message
+                var kafkaMessage = new KafkaMessage<string, CheckMrzStatusResponseModel>
+                {
+                    Key = Guid.NewGuid().ToString(),
+                    Value = responseModel,
+                    MessageType = nameof(CheckMrzStatusResponseModel)
+                };
+
+                await _checkMrzStatusProducer.ProduceAsync(kafkaMessage);
+            }
+
+            return responseModel;
+        }
+
+        public async Task<VerificationResponseModel> VerifyIdentity(VerificationRequestModel requestModel)
+        {
+            var identityVerificationRequest = _mapper.Map<IdentityVerificationRequest>(requestModel);
+            var verified = await _verifier.VerifyAsync(identityVerificationRequest);
+
+            var entity = await _kycRepository.GetByKycIdAsync(requestModel.KycId);
+            entity.Status = verified ? KycStatus.VerificationPassed : KycStatus.VerificationFailed;
+            await _kycRepository.UpdateAsync(entity);
+
+            var responseModel = _mapper.Map<VerificationResponseModel>(identityVerificationRequest);
+            responseModel.UserId = requestModel.UserId;
+            responseModel.IsVerified = verified;
+
+            // Send Kafka Message
+            var kafkaMessage = new KafkaMessage<string, VerificationResponseModel>
+            {
+                Key = Guid.NewGuid().ToString(),
+                Value = responseModel,
+                MessageType = nameof(VerificationResponseModel)
+            };
+
+            await _verificationProducer.ProduceAsync(kafkaMessage);
+
             return responseModel;
         }
     }

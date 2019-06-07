@@ -1,4 +1,5 @@
-﻿using KnowYourCustomer.Common;
+﻿using AutoMapper;
+using KnowYourCustomer.Common;
 using KnowYourCustomer.Common.Messaging.Interfaces;
 using KnowYourCustomer.Kyc.Contracts.Models;
 using KnowYourCustomer.Kyc.Contracts.Public.Models;
@@ -12,16 +13,21 @@ using System.Threading.Tasks;
 
 namespace KnowYourCustomer.Kyc.Consumer
 {
-    public class InitiateKycService : IHostedService
+    public class CheckMrzStatusService : IHostedService
     {
-        private readonly IKafkaConsumer<string, InitiateKycResponseModel> _consumer;
+        private readonly IKafkaConsumer<string, CheckMrzStatusResponseModel> _consumer;
         private readonly HttpClient _httpClient;
+        private readonly IMapper _mapper;
 
-        public InitiateKycService(IKafkaConsumer<string, InitiateKycResponseModel> consumer, IHttpClientFactory httpClientFactory)
+        public CheckMrzStatusService(
+            IKafkaConsumer<string, CheckMrzStatusResponseModel> consumer,
+            IHttpClientFactory httpClientFactory,
+            IMapper mapper)
         {
             _consumer = Guard.IsNotNull(consumer, nameof(consumer));
             Guard.IsNotNull(httpClientFactory, nameof(httpClientFactory));
             _httpClient = httpClientFactory.CreateClient("kyc");
+            _mapper = Guard.IsNotNull(mapper, nameof(mapper));
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -65,7 +71,7 @@ namespace KnowYourCustomer.Kyc.Consumer
             }
         }
 
-        private async Task<bool> HandleMessage(IKafkaMessage<string, InitiateKycResponseModel> message)
+        private async Task<bool> HandleMessage(IKafkaMessage<string, CheckMrzStatusResponseModel> message)
         {
             var serializedValue = JsonConvert.SerializeObject(message.Value);
             Console.WriteLine($"Consumed message in service \nkey: '{ message.Key }' \nvalue: '{ serializedValue }' at {DateTime.UtcNow}");
@@ -77,9 +83,9 @@ namespace KnowYourCustomer.Kyc.Consumer
 
             try
             {
-                var request = new CheckMrzStatusRequest { UserId = message.Value.UserId, KycId = message.Value.KycId, TaskId = message.Value.MrzTaskId };
+                var request = _mapper.Map<VerificationRequest>(message.Value);
                 var payload = JsonConvert.SerializeObject(request);
-                var response = await _httpClient.PostAsync("api/kyc/checkmrzstatus", new StringContent(payload, Encoding.UTF8, "application/json"));
+                var response = await _httpClient.PostAsync("api/kyc/verifyidentity", new StringContent(payload, Encoding.UTF8, "application/json"));
 
                 return response.IsSuccessStatusCode;
             }

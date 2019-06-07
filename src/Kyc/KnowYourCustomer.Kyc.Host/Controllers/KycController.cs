@@ -69,5 +69,16 @@ namespace KnowYourCustomer.Kyc.Host.Controllers
 
             return Ok(response);
         }
+
+        //[Authorize]
+        [HttpPost("verifyidentity")]
+        public async Task<ActionResult<CheckMrzStatusResponse>> VerifyIdentity(VerificationRequest request)
+        {
+            var model = _mapper.Map<VerificationRequestModel>(request);
+            var result = await _kycService.VerifyIdentity(model);
+            var response = _mapper.Map<VerificationResponse>(result);
+
+            return Ok(response);
+        }
     }
 }

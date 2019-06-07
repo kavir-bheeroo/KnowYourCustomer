@@ -2,6 +2,7 @@
 using KnowYourCustomer.Common.Messaging.Interfaces;
 using KnowYourCustomer.Common.Messaging.Kafka.Serializers;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -17,7 +18,9 @@ namespace KnowYourCustomer.Common.Messaging.Kafka.Consumers
 
         private bool _disposed = false;
 
-        public KafkaConsumer(IKafkaOptions kafkaOptions, ILogger<KafkaConsumer<TKey, TValue>> logger)
+        public string Topic { get; set; }
+
+        internal KafkaConsumer(IKafkaOptions kafkaOptions, ILogger<KafkaConsumer<TKey, TValue>> logger)
         {
             _kafkaOptions = Guard.IsNotNull(kafkaOptions, nameof(kafkaOptions));
             _logger = Guard.IsNotNull(logger, nameof(logger));
@@ -41,8 +44,15 @@ namespace KnowYourCustomer.Common.Messaging.Kafka.Consumers
                 .SetPartitionsAssignedHandler((_, e) => _logger.LogDebug($"Assigned partitions: [{string.Join(", ", e.Select(x => x.Partition))}]"))
                 .SetPartitionsRevokedHandler((_, e) => _logger.LogDebug($"Revoked partitions: [{string.Join(", ", e.Select(x => x.Partition))}]"))
                 .Build();
+        }
 
-            _consumer.Subscribe(_kafkaOptions.Topic);
+        public void Subscribe()
+        {
+            if (Topic == null)
+            {
+                throw new Exception("Topic cannot be null");
+            }
+            _consumer.Subscribe(Topic);
         }
 
         public IKafkaMessage<TKey, TValue> Consume(CancellationToken token = default(CancellationToken))
@@ -68,10 +78,11 @@ namespace KnowYourCustomer.Common.Messaging.Kafka.Consumers
             }
         }
 
-        public void Commit(IKafkaMessage<TKey, TValue> message, CancellationToken token = default(CancellationToken))
+        public void Commit(CancellationToken token = default(CancellationToken))
         {
-            var kafkaMessage = (KafkaMessage<TKey, TValue>)message;
-            _consumer.Commit(new List<TopicPartitionOffset> { kafkaMessage.Offset });
+            //var kafkaMessage = (KafkaMessage<TKey, TValue>)message;
+            //_consumer.Commit(new List<TopicPartitionOffset> { kafkaMessage.Offset });
+            _consumer.Commit();
         }
 
         public void Dispose()

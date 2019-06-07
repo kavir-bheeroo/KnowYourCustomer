@@ -57,7 +57,9 @@ namespace KnowYourCustomer.Kyc.Host
             services.AddScoped<IKycService, KycService>();
             services.AddScoped<IVerifier, TruliooApiVerifier>();
 
-            services.AddKafkaProducer<string, InitiateKycResponseModel>(Configuration);
+            services.AddKafkaProducer<string, InitiateKycResponseModel>(Configuration, "initiate-kyc");
+            services.AddKafkaProducer<string, CheckMrzStatusResponseModel>(Configuration, "check-mrz");
+            services.AddKafkaProducer<string, VerificationResponseModel>(Configuration, "verify-identity");
 
             services.AddAutoMapper(typeof(MappingProfile), typeof(Mappers.MappingProfile));
 

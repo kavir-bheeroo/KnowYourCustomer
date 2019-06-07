@@ -1,5 +1,7 @@
-﻿using KnowYourCustomer.Common.Hosting;
+﻿using AutoMapper;
+using KnowYourCustomer.Common.Hosting;
 using KnowYourCustomer.Common.Messaging.Kafka.Extensions;
+using KnowYourCustomer.Kyc.Consumer.Mappers;
 using KnowYourCustomer.Kyc.Contracts.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,9 +27,13 @@ namespace KnowYourCustomer.Kyc.Consumer
                         c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     });
 
+                    services.AddAutoMapper(typeof(MappingProfile));
+
                     services
-                        .AddKafkaConsumer<string, InitiateKycResponseModel>(hostContext.Configuration)
-                        .AddHostedService<InitiateKycService>();
+                        .AddKafkaConsumer<string, InitiateKycResponseModel>(hostContext.Configuration, "initiate-kyc")
+                        .AddHostedService<InitiateKycService>()
+                        .AddKafkaConsumer<string, CheckMrzStatusResponseModel>(hostContext.Configuration, "check-mrz")
+                        .AddHostedService<CheckMrzStatusService>();
                 });
     }
 }
