@@ -11,7 +11,11 @@ COPY ["src/Kyc/KnowYourCustomer.Kyc.MrzProcessor.Contracts/KnowYourCustomer.Kyc.
 COPY ["src/Common/KnowYourCustomer.Common/KnowYourCustomer.Common.csproj", "src/Common/KnowYourCustomer.Common/"]
 COPY ["src/Kyc/KnowYourCustomer.Kyc.Verifier.Trulioo/KnowYourCustomer.Kyc.Verifier.Trulioo.csproj", "src/Kyc/KnowYourCustomer.Kyc.Verifier.Trulioo/"]
 COPY ["src/Kyc/KnowYourCustomer.Kyc.Verifier.Contracts/KnowYourCustomer.Kyc.Verifier.Contracts.csproj", "src/Kyc/KnowYourCustomer.Kyc.Verifier.Contracts/"]
+COPY ["src/Kyc/KnowYourCustomer.Kyc.Data.EfCore/KnowYourCustomer.Kyc.Data.EfCore.csproj", "src/Kyc/KnowYourCustomer.Kyc.Data.EfCore/"]
+COPY ["src/Kyc/KnowYourCustomer.Kyc.Data.Contracts/KnowYourCustomer.Kyc.Data.Contracts.csproj", "src/Kyc/KnowYourCustomer.Kyc.Data.Contracts/"]
 COPY ["src/Kyc/KnowYourCustomer.Kyc.Contracts.Public/KnowYourCustomer.Kyc.Contracts.Public.csproj", "src/Kyc/KnowYourCustomer.Kyc.Contracts.Public/"]
+COPY ["src/Common/KnowYourCustomer.Common.Messaging.Kafka/KnowYourCustomer.Common.Messaging.Kafka.csproj", "src/Common/KnowYourCustomer.Common.Messaging.Kafka/"]
+COPY ["src/Common/KnowYourCustomer.Common.Messaging/KnowYourCustomer.Common.Messaging.csproj", "src/Common/KnowYourCustomer.Common.Messaging/"]
 COPY ["src/Kyc/KnowYourCustomer.Kyc/KnowYourCustomer.Kyc.csproj", "src/Kyc/KnowYourCustomer.Kyc/"]
 RUN dotnet restore "src/Kyc/KnowYourCustomer.Kyc.Host/KnowYourCustomer.Kyc.Host.csproj"
 COPY . .

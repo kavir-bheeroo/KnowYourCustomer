@@ -5,6 +5,8 @@ namespace KnowYourCustomer.Kyc.Contracts.Interfaces
 {
     public interface IKycService
     {
-        Task ProcessPassport(KycFile model);
+        Task<InitiateKycResponseModel> InitiateKyc(InitiateKycRequestModel requestModel);
+        Task<CheckMrzStatusResponseModel> CheckMrzTaskStatus(CheckMrzStatusRequestModel requestModel);
+        Task<VerificationResponseModel> VerifyIdentity(VerificationRequestModel requestModel);
     }
 }

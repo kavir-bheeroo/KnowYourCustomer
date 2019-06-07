@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="kyc-files-result\Passport01-result.xml" />
+    <None Remove="kyc-documents-result\Passport01-result.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="kyc-files-result\Passport01-result.xml">
+    <Content Include="kyc-documents-result\Passport01-result.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -25,9 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\KnowYourCustomer.Common.Messaging.Kafka\KnowYourCustomer.Common.Messaging.Kafka.csproj" />
     <ProjectReference Include="..\..\Common\KnowYourCustomer.Common\KnowYourCustomer.Common.csproj" />
     <ProjectReference Include="..\KnowYourCustomer.Kyc.Contracts.Public\KnowYourCustomer.Kyc.Contracts.Public.csproj" />
     <ProjectReference Include="..\KnowYourCustomer.Kyc.Contracts\KnowYourCustomer.Kyc.Contracts.csproj" />
+    <ProjectReference Include="..\KnowYourCustomer.Kyc.Data.EfCore\KnowYourCustomer.Kyc.Data.EfCore.csproj" />
     <ProjectReference Include="..\KnowYourCustomer.Kyc.MrzProcessor.Abbyy\KnowYourCustomer.Kyc.MrzProcessor.Abbyy.csproj" />
     <ProjectReference Include="..\KnowYourCustomer.Kyc.MrzProcessor.Contracts\KnowYourCustomer.Kyc.MrzProcessor.Contracts.csproj" />
     <ProjectReference Include="..\KnowYourCustomer.Kyc.Verifier.Trulioo\KnowYourCustomer.Kyc.Verifier.Trulioo.csproj" />
