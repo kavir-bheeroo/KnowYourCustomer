@@ -14,7 +14,7 @@ namespace KnowYourCustomer.Kyc.Host.Infrastructure.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     UserId = table.Column<Guid>(nullable: false),
                     Status = table.Column<int>(nullable: false),
-                    KycRequestDate = table.Column<DateTime>(nullable: false)
+                    RequestDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -27,11 +27,29 @@ namespace KnowYourCustomer.Kyc.Host.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     KycId = table.Column<Guid>(nullable: false),
-                    UserId = table.Column<Guid>(nullable: false)
+                    UserId = table.Column<Guid>(nullable: false),
+                    Document = table.Column<byte[]>(nullable: true),
+                    UploadedOn = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_KycDocuments", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "KycOperations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    KycId = table.Column<Guid>(nullable: false),
+                    UserId = table.Column<Guid>(nullable: false),
+                    Operation = table.Column<int>(nullable: false),
+                    Provider = table.Column<int>(nullable: false),
+                    TimeOperation = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KycOperations", x => x.Id);
                 });
         }
 
@@ -42,6 +60,9 @@ namespace KnowYourCustomer.Kyc.Host.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "KycDocuments");
+
+            migrationBuilder.DropTable(
+                name: "KycOperations");
         }
     }
 }

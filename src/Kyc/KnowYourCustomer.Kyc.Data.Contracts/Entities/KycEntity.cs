@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using KnowYourCustomer.Kyc.Data.Contracts.Enumerations;
+using System;
 
 namespace KnowYourCustomer.Kyc.Data.Contracts.Entities
 {
@@ -9,6 +8,16 @@ namespace KnowYourCustomer.Kyc.Data.Contracts.Entities
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public KycStatus Status { get; set; }
-        public DateTime KycRequestDate { get; set; }
+        public DateTime RequestDate { get; set; }
+
+        protected KycEntity() { }
+
+        public KycEntity(Guid userId, KycStatus status)
+        {
+            Id = Guid.NewGuid();
+            UserId = userId;
+            Status = status;
+            RequestDate = DateTime.UtcNow;
+        }
     }
 }

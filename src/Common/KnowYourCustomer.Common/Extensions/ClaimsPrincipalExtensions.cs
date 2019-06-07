@@ -1,19 +1,21 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 
 namespace KnowYourCustomer.Common.Extensions
 {
     public static class ClaimsPrincipalExtensions
     {
-        public static string GetUserId(this ClaimsPrincipal user)
+        public static Guid? GetUserId(this ClaimsPrincipal user)
         {
             return user.GetClaimValue(ClaimTypes.SubjectId);
         }
 
-        private static string GetClaimValue(this ClaimsPrincipal user, string claimType)
+        private static Guid? GetClaimValue(this ClaimsPrincipal user, string claimType)
         {
             var value = user?.FindFirst(claimType)?.Value;
+            var isGuid = Guid.TryParse(value, out var result);
 
-            return string.IsNullOrEmpty(value) ? null : value;
+            return string.IsNullOrEmpty(value) || !isGuid ? (Guid?)null : result;
         }
     }
 

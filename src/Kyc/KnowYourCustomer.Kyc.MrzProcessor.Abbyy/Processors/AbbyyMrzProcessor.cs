@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
@@ -14,65 +15,49 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors
 {
     public class AbbyyMrzProcessor : IMrzProcessor
     {
-        //private readonly HttpClient _httpClient;
-
         private const string ServerUrl = "https://cloud-eu.ocrsdk.com/";
 
-        public AbbyyMrzProcessor()//HttpClient httpClient)
+        public MrzSubmitResponse ProcessMrzFile(MrzSubmitRequest request)
         {
-            //_httpClient = Guard.IsNotNull(httpClient, nameof(httpClient));
+            string url = string.Format("{0}/processMRZ", ServerUrl);
+            WebRequest webRequest = CreatePostRequest(url);
+            WriteFileToRequest(request.FilePath, webRequest);
+
+            XDocument response = PerformRequest(webRequest);
+            var abbyyOcrTask = XmlParser.GetTaskStatus(response);
+            return new MrzSubmitResponse { TaskId = abbyyOcrTask.TaskId.Id, Status = abbyyOcrTask.Status.ToString() };
         }
 
-        public MrzProcessResponse ProcessMrzFile(MrzProcessRequest request)
+        public MrzStatusResponse GetMrzTaskStatus(MrzStatusRequest request)
         {
-            //_httpClient.BaseAddress = new Uri("https://cloud-eu.ocrsdk.com/");
-            //_httpClient.PostAsync()
+            // Get Task Status
+            string url = string.Format("{0}/getTaskStatus?taskId={1}", ServerUrl, Uri.EscapeDataString(request.TaskId));
 
-            //string url = string.Format("{0}/processMRZ", ServerUrl);
-            //WebRequest webRequest = CreatePostRequest(url);
-            //WriteFileToRequest(request.FilePath, webRequest);
+            Thread.Sleep(3000);
+            WebRequest webRequest = CreateGetRequest(url);
+            XDocument response = PerformRequest(webRequest);
+            var abbyyOcrTask = XmlParser.GetTaskStatus(response);
 
-            //XDocument response = PerformRequest(webRequest);
-            //var abbyyOcrTask = XmlParser.GetTaskStatus(response);
-            //abbyyOcrTask = WaitForTask(abbyyOcrTask);
+            if (abbyyOcrTask.Status != TaskStatus.Completed)
+            {
+                return new MrzStatusResponse();
+            }
 
-            //var kycFolderResponsePath = Path.Combine(Environment.CurrentDirectory, "kyc-files-result");
-            //Directory.CreateDirectory(kycFolderResponsePath);
-            //var path = Path.Combine(kycFolderResponsePath, Path.GetFileNameWithoutExtension(request.FileName) + "-result.xml");
-            //DownloadResult(abbyyOcrTask, path);
-
-            var kycFolderResponsePath = Path.Combine(Environment.CurrentDirectory, "kyc-files-result");
+            // Download Task response file
+            var kycFolderResponsePath = Path.Combine(Environment.CurrentDirectory, "kyc-documents-result");
             Directory.CreateDirectory(kycFolderResponsePath);
-            var path = Path.Combine(kycFolderResponsePath, "Passport01-result.xml");
+            var path = Path.Combine(kycFolderResponsePath, Path.GetFileNameWithoutExtension(request.KycId.ToString()) + $"_{DateTime.UtcNow.ToString("ddMMyyy:hhmmss")}.xml");
+            DownloadResult(abbyyOcrTask, path);
 
+            // Deserialize into response object
             var serializer = new XmlSerializer(typeof(DocumentType));
 
             using (var reader = new StreamReader(path))
             {
                 var deserializedResponse = (DocumentType)serializer.Deserialize(reader);
                 var dictionary = deserializedResponse.ToDictionary();
-                return new MrzProcessResponse(dictionary);
+                return new MrzStatusResponse(dictionary);
             }
-        }
-
-        private OcrTask WaitForTask(OcrTask task)
-        {
-            Console.WriteLine(string.Format("Task status: {0}", task.Status));
-            while (task.IsTaskActive())
-            {
-                // Note: it's recommended that your application waits
-                // at least 2 seconds before making the first getTaskStatus request
-                // and also between such requests for the same task.
-                // Making requests more often will not improve your application performance.
-                // Note: if your application queues several files and waits for them
-                // it's recommended that you use listFinishedTasks instead (which is described
-                // at https://ocrsdk.com/documentation/apireference/listFinishedTasks/).
-                System.Threading.Thread.Sleep(5000);
-                task = GetTaskStatus(task.TaskId.Id);
-                Console.WriteLine(string.Format("Task status: {0}", task.Status));
-            }
-
-            return task;
         }
 
         private void DownloadResult(OcrTask task, string outputFile)
@@ -103,7 +88,7 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors
             }
         }
 
-        public void DownloadUrl(string url, string outputFile)
+        private void DownloadUrl(string url, string outputFile)
         {
             try
             {
@@ -222,16 +207,6 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors
                     return responseXml;
                 }
             }
-        }
-
-        public OcrTask GetTaskStatus(string id)
-        {
-            string url = string.Format("{0}/getTaskStatus?taskId={1}", ServerUrl, Uri.EscapeDataString(id));
-
-            WebRequest request = CreateGetRequest(url);
-            XDocument response = PerformRequest(request);
-            var serverTask = XmlParser.GetTaskStatus(response);
-            return serverTask;
         }
     }
 }

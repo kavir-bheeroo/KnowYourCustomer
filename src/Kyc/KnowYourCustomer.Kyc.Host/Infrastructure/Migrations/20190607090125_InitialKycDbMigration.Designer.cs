@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowYourCustomer.Kyc.Host.Infrastructure.Migrations
 {
     [DbContext(typeof(KycDbContext))]
-    [Migration("20190606205216_InitialKycDbMigration")]
+    [Migration("20190607090125_InitialKycDbMigration")]
     partial class InitialKycDbMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,7 +26,11 @@ namespace KnowYourCustomer.Kyc.Host.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<byte[]>("Document");
+
                     b.Property<Guid>("KycId");
+
+                    b.Property<DateTime>("UploadedOn");
 
                     b.Property<Guid>("UserId");
 
@@ -40,7 +44,7 @@ namespace KnowYourCustomer.Kyc.Host.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("KycRequestDate");
+                    b.Property<DateTime>("RequestDate");
 
                     b.Property<int>("Status");
 
@@ -49,6 +53,26 @@ namespace KnowYourCustomer.Kyc.Host.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Kyc");
+                });
+
+            modelBuilder.Entity("KnowYourCustomer.Kyc.Data.Contracts.Entities.KycOperationEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("KycId");
+
+                    b.Property<int>("Operation");
+
+                    b.Property<int>("Provider");
+
+                    b.Property<DateTime>("TimeOperation");
+
+                    b.Property<Guid>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("KycOperations");
                 });
 #pragma warning restore 612, 618
         }

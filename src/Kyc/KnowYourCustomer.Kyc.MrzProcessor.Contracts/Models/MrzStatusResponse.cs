@@ -4,14 +4,17 @@ using System.Globalization;
 
 namespace KnowYourCustomer.Kyc.MrzProcessor.Contracts.Models
 {
-    public class MrzProcessResponse
+    public class MrzStatusResponse
     {
         public UserInfo UserInfo { get; set; }
         public PassportInfo PassportInfo { get; set; }
+        public bool IsMrzCompleted { get; set; } = false;
 
         private const string DateTimeFormat = "yyMMdd";
 
-        public MrzProcessResponse(IDictionary<string, string> dictionary)
+        public MrzStatusResponse() { }
+
+        public MrzStatusResponse(IDictionary<string, string> dictionary)
         {
             UserInfo = new UserInfo
             {
@@ -30,6 +33,8 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Contracts.Models
                 Number = dictionary["DocumentNumber"],
                 DateOfExpiry = DateTime.ParseExact(dictionary["ExpiryDate"], DateTimeFormat, CultureInfo.InvariantCulture)
             };
+
+            IsMrzCompleted = true;
         }
     }
 

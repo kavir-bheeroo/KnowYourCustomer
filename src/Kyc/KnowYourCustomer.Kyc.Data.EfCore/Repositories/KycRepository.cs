@@ -16,15 +16,22 @@ namespace KnowYourCustomer.Kyc.Data.EfCore.Repositories
             _dbContext = Guard.IsNotNull(dbContext, nameof(dbContext));
         }
 
-        public async Task AddAsync(KycEntity entity)
+        public async Task<KycEntity> AddAsync(KycEntity entity)
         {
             await _dbContext.Kyc.AddAsync(entity);
             await _dbContext.SaveChangesAsync();
+
+            return entity;
         }
 
         public async Task<KycEntity> GetByUserIdAsync(Guid userId)
         {
             return await _dbContext.Kyc.AsNoTracking().FirstOrDefaultAsync(kyc => kyc.UserId.Equals(userId));
+        }
+
+        public async Task<KycEntity> GetByKycIdAsync(Guid kycId)
+        {
+            return await _dbContext.Kyc.AsNoTracking().FirstOrDefaultAsync(kyc => kyc.Id.Equals(kycId));
         }
 
         public async Task UpdateAsync(KycEntity entity)

@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="kyc-files-result\Passport01-result.xml" />
+    <None Remove="kyc-documents-result\Passport01-result.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="kyc-files-result\Passport01-result.xml">
+    <Content Include="kyc-documents-result\Passport01-result.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

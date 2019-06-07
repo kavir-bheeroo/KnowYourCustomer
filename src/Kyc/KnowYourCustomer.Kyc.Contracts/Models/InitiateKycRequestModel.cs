@@ -1,10 +1,10 @@
-﻿using System.IO;
+﻿using System;
 
 namespace KnowYourCustomer.Kyc.Contracts.Models
 {
-    public class KycFile
+    public class InitiateKycRequestModel
     {
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
         public string FileName { get; set; }
         public string FilePath { get; set; }
     }

@@ -49,6 +49,7 @@ namespace KnowYourCustomer.Kyc.Host
 
             services.AddScoped<IKycRepository, KycRepository>();
             services.AddScoped<IKycDocumentRepository, KycDocumentRepository>();
+            services.AddScoped<IKycOperationRepository, KycOperationRepository>();
 
             services.AddScoped<IMrzProcessor, AbbyyMrzProcessor>();
             services.AddScoped<IKycService, KycService>();

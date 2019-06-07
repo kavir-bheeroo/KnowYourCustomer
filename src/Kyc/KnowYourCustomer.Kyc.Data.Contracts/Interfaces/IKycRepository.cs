@@ -6,8 +6,9 @@ namespace KnowYourCustomer.Kyc.Data.Contracts.Interfaces
 {
     public interface IKycRepository
     {
-        Task AddAsync(KycEntity entity);
+        Task<KycEntity> AddAsync(KycEntity entity);
         Task<KycEntity> GetByUserIdAsync(Guid userId);
+        Task<KycEntity> GetByKycIdAsync(Guid kycId);
         Task UpdateAsync(KycEntity entity);
     }
 }
