@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Swagger;
 using System;
 
 namespace KnowYourCustomer.Kyc.Host
@@ -69,6 +70,11 @@ namespace KnowYourCustomer.Kyc.Host
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "KycService", Version = "v1" });
+            });
+
             services.AddAuthentication("Bearer")
                 .AddIdentityServerAuthentication(options =>
                 {
@@ -88,6 +94,11 @@ namespace KnowYourCustomer.Kyc.Host
 
             app.UseAuthentication();
             app.UseMiddleware<ResponseMiddleware>();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "KycService V1");
+            });
             app.UseMvc();
         }
 
