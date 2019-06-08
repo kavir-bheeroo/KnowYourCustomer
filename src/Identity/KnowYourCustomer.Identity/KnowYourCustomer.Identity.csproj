@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Common\KnowYourCustomer.Common\KnowYourCustomer.Common.csproj" />
+    <ProjectReference Include="..\KnowYourCustomer.Identity.Contracts\KnowYourCustomer.Identity.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

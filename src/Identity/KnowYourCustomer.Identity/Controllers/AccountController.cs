@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using KnowYourCustomer.Common;
+using KnowYourCustomer.Identity.Contracts.Models;
 using KnowYourCustomer.Identity.Data.Entities;
-using KnowYourCustomer.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace KnowYourCustomer.Identity.Controllers

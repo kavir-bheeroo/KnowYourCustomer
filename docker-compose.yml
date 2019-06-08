@@ -34,6 +34,7 @@ services:
       context: .
       dockerfile: src/Kyc/KnowYourCustomer.Kyc.Consumer/Dockerfile
     environment:
+      - "IdentityServerUrl=http://identity"
       - "KycServiceUrl=http://kyc"
     depends_on:
       - kafka

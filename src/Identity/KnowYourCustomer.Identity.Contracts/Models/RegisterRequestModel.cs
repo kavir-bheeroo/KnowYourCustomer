@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace KnowYourCustomer.Identity.Models
+namespace KnowYourCustomer.Identity.Contracts.Models
 {
     public class RegisterRequestModel
     {

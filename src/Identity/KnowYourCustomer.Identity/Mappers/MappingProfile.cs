@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using KnowYourCustomer.Identity.Contracts.Models;
 using KnowYourCustomer.Identity.Data.Entities;
-using KnowYourCustomer.Identity.Models;
 
 namespace KnowYourCustomer.Identity.Mappers
 {

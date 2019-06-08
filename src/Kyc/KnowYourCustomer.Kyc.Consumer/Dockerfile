@@ -5,6 +5,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:2.2-stretch AS build
 WORKDIR /src
 COPY ["src/Kyc/KnowYourCustomer.Kyc.Consumer/KnowYourCustomer.Kyc.Consumer.csproj", "src/Kyc/KnowYourCustomer.Kyc.Consumer/"]
 COPY ["src/Kyc/KnowYourCustomer.Kyc.Contracts/KnowYourCustomer.Kyc.Contracts.csproj", "src/Kyc/KnowYourCustomer.Kyc.Contracts/"]
+COPY ["src/Identity/KnowYourCustomer.Identity.Contracts/KnowYourCustomer.Identity.Contracts.csproj", "src/Identity/KnowYourCustomer.Identity.Contracts/"]
 COPY ["src/Common/KnowYourCustomer.Common.Messaging/KnowYourCustomer.Common.Messaging.csproj", "src/Common/KnowYourCustomer.Common.Messaging/"]
 COPY ["src/Common/KnowYourCustomer.Common/KnowYourCustomer.Common.csproj", "src/Common/KnowYourCustomer.Common/"]
 COPY ["src/Common/KnowYourCustomer.Common.Hosting/KnowYourCustomer.Common.Hosting.csproj", "src/Common/KnowYourCustomer.Common.Hosting/"]
