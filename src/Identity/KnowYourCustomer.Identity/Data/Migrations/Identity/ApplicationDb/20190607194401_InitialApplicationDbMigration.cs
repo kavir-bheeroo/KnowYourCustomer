@@ -69,7 +69,14 @@ namespace KnowYourCustomer.Identity.Data.Migrations.Identity.ApplicationDb
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true)
+                    LastName = table.Column<string>(nullable: true),
+                    DateOfBirth = table.Column<DateTime>(nullable: false),
+                    Gender = table.Column<string>(nullable: true),
+                    Nationality = table.Column<string>(nullable: true),
+                    Mrz1 = table.Column<string>(nullable: true),
+                    Mrz2 = table.Column<string>(nullable: true),
+                    Number = table.Column<string>(nullable: true),
+                    DateOfExpiry = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {

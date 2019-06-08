@@ -1,7 +1,10 @@
-﻿using KnowYourCustomer.Common;
+﻿using AutoMapper;
+using KnowYourCustomer.Common;
+using KnowYourCustomer.Identity.Data.Entities;
 using KnowYourCustomer.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,15 +16,17 @@ namespace KnowYourCustomer.Identity.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IMapper _mapper;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IMapper mapper)
         {
             _userManager = Guard.IsNotNull(userManager, nameof(userManager));
             _signInManager = Guard.IsNotNull(signInManager, nameof(signInManager));
+            _mapper = Guard.IsNotNull(mapper, nameof(mapper));
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<bool>> Login(LoginInputModel model)
+        public async Task<ActionResult<bool>> Login(LoginModel model)
         {
             if (ModelState.IsValid)
             {
@@ -29,26 +34,38 @@ namespace KnowYourCustomer.Identity.Controllers
                 return result.Succeeded;
             }
 
-            return false;
+            return Ok(false);
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<bool>> Register(RegisterInputModel model)
+        public async Task<ActionResult<RegisterResponseModel>> Register(RegisterRequestModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _userManager.CreateAsync(new ApplicationUser { UserName = model.Username }, model.Password);
-                return result.Succeeded;
-            }
+                await _userManager.CreateAsync(new ApplicationUser { UserName = model.Username }, model.Password);
+                var user = await _userManager.FindByNameAsync(model.Username);
 
-            return false;
+                return new RegisterResponseModel { UserId = user.Id, Username = user.UserName };
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
-        // GET api/values
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        [HttpPost("update/{userId}")]
+        public async Task<ActionResult> Update(Guid userId, UpdateModel model)
         {
-            return new string[] { "value1", "value2" };
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(model, user);
+            await _userManager.UpdateAsync(user);
+
+            return Ok();
         }
     }
 }

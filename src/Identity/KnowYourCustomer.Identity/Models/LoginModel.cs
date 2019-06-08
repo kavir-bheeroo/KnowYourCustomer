@@ -2,7 +2,7 @@
 
 namespace KnowYourCustomer.Identity.Models
 {
-    public class LoginInputModel
+    public class LoginModel
     {
         [Required]
         public string Username { get; set; }

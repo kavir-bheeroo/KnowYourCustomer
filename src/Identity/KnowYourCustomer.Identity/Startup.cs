@@ -1,7 +1,10 @@
-﻿using IdentityServer4.EntityFramework.DbContexts;
+﻿using AutoMapper;
+using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using KnowYourCustomer.Identity.Configuration;
 using KnowYourCustomer.Identity.Data;
+using KnowYourCustomer.Identity.Data.Entities;
+using KnowYourCustomer.Identity.Mappers;
 using KnowYourCustomer.Identity.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -70,6 +73,8 @@ namespace KnowYourCustomer.Identity
                     options.EnableTokenCleanup = true;
                     options.TokenCleanupInterval = 30;
                 });
+
+            services.AddAutoMapper(typeof(MappingProfile));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

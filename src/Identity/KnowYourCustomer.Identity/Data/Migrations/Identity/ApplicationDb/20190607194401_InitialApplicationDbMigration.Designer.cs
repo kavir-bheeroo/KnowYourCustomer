@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowYourCustomer.Identity.Data.Migrations.Identity.ApplicationDb
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190605214359_InitialApplicationDbMigration")]
+    [Migration("20190607194401_InitialApplicationDbMigration")]
     partial class InitialApplicationDbMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace KnowYourCustomer.Identity.Data.Migrations.Identity.ApplicationDb
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("KnowYourCustomer.Identity.Models.ApplicationUser", b =>
+            modelBuilder.Entity("KnowYourCustomer.Identity.Data.Entities.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -30,11 +30,17 @@ namespace KnowYourCustomer.Identity.Data.Migrations.Identity.ApplicationDb
 
                     b.Property<string>("ConcurrencyStamp");
 
+                    b.Property<DateTime>("DateOfBirth");
+
+                    b.Property<DateTime>("DateOfExpiry");
+
                     b.Property<string>("Email");
 
                     b.Property<bool>("EmailConfirmed");
 
                     b.Property<string>("FirstName");
+
+                    b.Property<string>("Gender");
 
                     b.Property<string>("LastName");
 
@@ -42,9 +48,17 @@ namespace KnowYourCustomer.Identity.Data.Migrations.Identity.ApplicationDb
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
 
+                    b.Property<string>("Mrz1");
+
+                    b.Property<string>("Mrz2");
+
+                    b.Property<string>("Nationality");
+
                     b.Property<string>("NormalizedEmail");
 
                     b.Property<string>("NormalizedUserName");
+
+                    b.Property<string>("Number");
 
                     b.Property<string>("PasswordHash");
 

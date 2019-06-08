@@ -1,5 +1,5 @@
 ﻿using IdentityServer4.Models;
-using KnowYourCustomer.Identity.Models;
+using KnowYourCustomer.Identity.Data.Entities;
 using System.Collections.Generic;
 
 namespace KnowYourCustomer.Identity.Configuration
