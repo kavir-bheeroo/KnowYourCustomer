@@ -18,7 +18,7 @@ using Xunit;
 
 namespace KnowYourCustomer.Kyc.UnitTests
 {
-    public class PlayerServiceTests
+    public class KycServiceTests
     {
         private readonly Mock<IKycRepository> _kycRepositoryMock;
         private readonly Mock<IMrzProcessor> _mrzProcessorMock;
@@ -30,7 +30,7 @@ namespace KnowYourCustomer.Kyc.UnitTests
 
         private readonly KycService _sut;
 
-        public PlayerServiceTests()
+        public KycServiceTests()
         {
             _kycRepositoryMock = new Mock<IKycRepository>();
             _mrzProcessorMock = new Mock<IMrzProcessor>();
