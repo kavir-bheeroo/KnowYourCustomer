@@ -19,8 +19,6 @@ namespace KnowYourCustomer.Kyc.Services
     public class KycService : IKycService
     {
         private readonly IKycRepository _kycRepository;
-        private readonly IKycDocumentRepository _kycDocumentRepository;
-        private readonly IKycOperationRepository _kycOperationRepository;
 
         private readonly IMrzProcessor _mrzProcessor;
         private readonly IVerifier _verifier;
@@ -32,8 +30,6 @@ namespace KnowYourCustomer.Kyc.Services
 
         public KycService(
             IKycRepository kycRepository,
-            IKycDocumentRepository kycDocumentRepository,
-            IKycOperationRepository kycOperationRepository,
             IMrzProcessor mrzProcessor,
             IVerifier verifier,
             IMapper mapper,
@@ -42,8 +38,6 @@ namespace KnowYourCustomer.Kyc.Services
             IKafkaProducer<string, VerificationResponseModel> verificationProducer)
         {
             _kycRepository = Guard.IsNotNull(kycRepository, nameof(kycRepository));
-            _kycDocumentRepository = Guard.IsNotNull(kycDocumentRepository, nameof(kycDocumentRepository));
-            _kycOperationRepository = Guard.IsNotNull(kycOperationRepository, nameof(kycOperationRepository));
 
             _mrzProcessor = Guard.IsNotNull(mrzProcessor, nameof(mrzProcessor));
             _verifier = Guard.IsNotNull(verifier, nameof(verifier));
@@ -54,7 +48,7 @@ namespace KnowYourCustomer.Kyc.Services
             _verificationProducer = Guard.IsNotNull(verificationProducer, nameof(verificationProducer));
         }
 
-        public async Task<InitiateKycResponseModel> InitiateKyc(InitiateKycRequestModel requestModel)
+        public async Task<InitiateKycResponseModel> InitiateKycAsync(InitiateKycRequestModel requestModel)
         {
             var kycEntity = await _kycRepository.AddAsync(new KycEntity(requestModel.UserId, KycStatus.Initiated));
 
@@ -81,7 +75,7 @@ namespace KnowYourCustomer.Kyc.Services
             return responseModel;
         }
 
-        public async Task<CheckMrzStatusResponseModel> CheckMrzTaskStatus(CheckMrzStatusRequestModel requestModel)
+        public async Task<CheckMrzStatusResponseModel> CheckMrzTaskStatusAsync(CheckMrzStatusRequestModel requestModel)
         {
             var mrzStatusRequest = _mapper.Map<MrzStatusRequest>(requestModel);
             var mrzStatusResponse = _mrzProcessor.GetMrzTaskStatus(mrzStatusRequest);
@@ -110,7 +104,7 @@ namespace KnowYourCustomer.Kyc.Services
             return responseModel;
         }
 
-        public async Task<VerificationResponseModel> VerifyIdentity(VerificationRequestModel requestModel)
+        public async Task<VerificationResponseModel> VerifyIdentityAsync(VerificationRequestModel requestModel)
         {
             var identityVerificationRequest = _mapper.Map<IdentityVerificationRequest>(requestModel);
             var verified = await _verifier.VerifyAsync(identityVerificationRequest);

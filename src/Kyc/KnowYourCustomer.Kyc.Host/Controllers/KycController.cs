@@ -53,7 +53,7 @@ namespace KnowYourCustomer.Kyc.Host.Controllers
                 FilePath = path
             };
 
-            var result = await _kycService.InitiateKyc(model);
+            var result = await _kycService.InitiateKycAsync(model);
             var response = _mapper.Map<InitiateKycResponse>(result);
 
             return Ok(response);
@@ -63,7 +63,7 @@ namespace KnowYourCustomer.Kyc.Host.Controllers
         public async Task<ActionResult<CheckMrzStatusResponse>> CheckMrzStatus(CheckMrzStatusRequest request)
         {
             var model = _mapper.Map<CheckMrzStatusRequestModel>(request);
-            var result = await _kycService.CheckMrzTaskStatus(model);
+            var result = await _kycService.CheckMrzTaskStatusAsync(model);
             var response = _mapper.Map<CheckMrzStatusResponse>(result);
 
             return Ok(response);
@@ -73,7 +73,7 @@ namespace KnowYourCustomer.Kyc.Host.Controllers
         public async Task<ActionResult<CheckMrzStatusResponse>> VerifyIdentity(VerificationRequest request)
         {
             var model = _mapper.Map<VerificationRequestModel>(request);
-            var result = await _kycService.VerifyIdentity(model);
+            var result = await _kycService.VerifyIdentityAsync(model);
             var response = _mapper.Map<VerificationResponse>(result);
 
             return Ok(response);
