@@ -10,7 +10,7 @@ namespace KnowYourCustomer.Kyc.Data.Contracts.Entities
         public KycStatus Status { get; set; }
         public DateTime RequestDate { get; set; }
 
-        protected KycEntity() { }
+        public KycEntity() { }
 
         public KycEntity(Guid userId, KycStatus status)
         {
