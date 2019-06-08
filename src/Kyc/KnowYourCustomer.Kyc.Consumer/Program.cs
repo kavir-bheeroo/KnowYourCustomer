@@ -27,13 +27,21 @@ namespace KnowYourCustomer.Kyc.Consumer
                         c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     });
 
+                    services.AddHttpClient("identity", c =>
+                    {
+                        c.BaseAddress = new Uri(hostContext.Configuration["IdentityServerUrl"]);
+                        c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    });
+
                     services.AddAutoMapper(typeof(MappingProfile));
 
                     services
                         .AddKafkaConsumer<string, InitiateKycResponseModel>(hostContext.Configuration, "initiate-kyc")
                         .AddHostedService<InitiateKycService>()
                         .AddKafkaConsumer<string, CheckMrzStatusResponseModel>(hostContext.Configuration, "check-mrz")
-                        .AddHostedService<CheckMrzStatusService>();
+                        .AddHostedService<CheckMrzStatusService>()
+                        .AddKafkaConsumer<string, VerificationResponseModel>(hostContext.Configuration, "verify-identity")
+                        .AddHostedService<VerifyIdentityService>();
                 });
     }
 }

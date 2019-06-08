@@ -29,3 +29,4 @@ Generated EF Core migrations for IdentityServer
 - dotnet ef migrations add InitialIdentityServerPersistedGrantDbMigration -c PersistedGrantDbContext -o Data/Migrations/IdentityServer/PersistedGrantDb
 - dotnet ef migrations add InitialIdentityServerConfigurationDbMigration -c ConfigurationDbContext -o Data/Migrations/IdentityServer/ConfigurationDb
 - dotnet ef migrations add InitialApplicationDbMigration -c ApplicationDbContext -o Data/Migrations/Identity/ApplicationDb
+- dotnet ef migrations add InitialKycDbMigration -c KycDbContext -o Infrastructure/Migrations

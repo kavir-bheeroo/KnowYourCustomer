@@ -44,13 +44,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnowYourCustomer.Kyc.Data.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnowYourCustomer.Kyc.Data.EfCore", "src\Kyc\KnowYourCustomer.Kyc.Data.EfCore\KnowYourCustomer.Kyc.Data.EfCore.csproj", "{AB0CDDD9-3663-4E02-A678-49ED89D2FC55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowYourCustomer.Common.Messaging", "src\Common\KnowYourCustomer.Common.Messaging\KnowYourCustomer.Common.Messaging.csproj", "{88C624E5-2DED-45F5-9170-4EF3442BE6AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnowYourCustomer.Common.Messaging", "src\Common\KnowYourCustomer.Common.Messaging\KnowYourCustomer.Common.Messaging.csproj", "{88C624E5-2DED-45F5-9170-4EF3442BE6AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowYourCustomer.Common.Messaging.Kafka", "src\Common\KnowYourCustomer.Common.Messaging.Kafka\KnowYourCustomer.Common.Messaging.Kafka.csproj", "{86BF3A9C-7C70-4423-BC7A-F453157A1175}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnowYourCustomer.Common.Messaging.Kafka", "src\Common\KnowYourCustomer.Common.Messaging.Kafka\KnowYourCustomer.Common.Messaging.Kafka.csproj", "{86BF3A9C-7C70-4423-BC7A-F453157A1175}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowYourCustomer.Kyc.Consumer", "src\Kyc\KnowYourCustomer.Kyc.Consumer\KnowYourCustomer.Kyc.Consumer.csproj", "{CD744DB8-C466-4C65-9D38-83841E410096}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnowYourCustomer.Kyc.Consumer", "src\Kyc\KnowYourCustomer.Kyc.Consumer\KnowYourCustomer.Kyc.Consumer.csproj", "{CD744DB8-C466-4C65-9D38-83841E410096}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowYourCustomer.Common.Hosting", "src\Common\KnowYourCustomer.Common.Hosting\KnowYourCustomer.Common.Hosting.csproj", "{6DC43993-EC1A-4B74-807C-6C7329959861}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnowYourCustomer.Common.Hosting", "src\Common\KnowYourCustomer.Common.Hosting\KnowYourCustomer.Common.Hosting.csproj", "{6DC43993-EC1A-4B74-807C-6C7329959861}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowYourCustomer.Identity.Contracts", "src\Identity\KnowYourCustomer.Identity.Contracts\KnowYourCustomer.Identity.Contracts.csproj", "{DE1365DE-4F88-4407-8E06-204FA81D0EFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -126,6 +128,10 @@ Global
 		{6DC43993-EC1A-4B74-807C-6C7329959861}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DC43993-EC1A-4B74-807C-6C7329959861}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6DC43993-EC1A-4B74-807C-6C7329959861}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE1365DE-4F88-4407-8E06-204FA81D0EFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE1365DE-4F88-4407-8E06-204FA81D0EFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE1365DE-4F88-4407-8E06-204FA81D0EFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE1365DE-4F88-4407-8E06-204FA81D0EFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -150,6 +156,7 @@ Global
 		{86BF3A9C-7C70-4423-BC7A-F453157A1175} = {FF840B47-B84B-4169-96EE-2F7352C765A8}
 		{CD744DB8-C466-4C65-9D38-83841E410096} = {59D25ABB-4F8A-486F-A6B2-079E404A1F83}
 		{6DC43993-EC1A-4B74-807C-6C7329959861} = {FF840B47-B84B-4169-96EE-2F7352C765A8}
+		{DE1365DE-4F88-4407-8E06-204FA81D0EFD} = {14B61164-B740-48B8-8A55-80270E73A0C4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AD5A920B-6A7B-40D3-AA69-7D43B382F214}

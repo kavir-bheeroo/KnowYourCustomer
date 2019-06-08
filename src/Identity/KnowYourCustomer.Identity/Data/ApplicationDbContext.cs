@@ -1,4 +1,4 @@
-﻿using KnowYourCustomer.Identity.Models;
+﻿using KnowYourCustomer.Identity.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
