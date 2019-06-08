@@ -54,7 +54,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnowYourCustomer.Common.Hos
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnowYourCustomer.Identity.Contracts", "src\Identity\KnowYourCustomer.Identity.Contracts\KnowYourCustomer.Identity.Contracts.csproj", "{DE1365DE-4F88-4407-8E06-204FA81D0EFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowYourCustomer.Common.Http", "src\Common\KnowYourCustomer.Common.Http\KnowYourCustomer.Common.Http.csproj", "{BF2DB825-C0EE-4E5C-9148-C23819149320}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowYourCustomer.Common.Web", "src\Common\KnowYourCustomer.Common.Web\KnowYourCustomer.Common.Web.csproj", "{965D5A7B-FA73-41AB-A55C-1304D18B3E6E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -134,10 +134,10 @@ Global
 		{DE1365DE-4F88-4407-8E06-204FA81D0EFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE1365DE-4F88-4407-8E06-204FA81D0EFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE1365DE-4F88-4407-8E06-204FA81D0EFD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BF2DB825-C0EE-4E5C-9148-C23819149320}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BF2DB825-C0EE-4E5C-9148-C23819149320}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BF2DB825-C0EE-4E5C-9148-C23819149320}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BF2DB825-C0EE-4E5C-9148-C23819149320}.Release|Any CPU.Build.0 = Release|Any CPU
+		{965D5A7B-FA73-41AB-A55C-1304D18B3E6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{965D5A7B-FA73-41AB-A55C-1304D18B3E6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{965D5A7B-FA73-41AB-A55C-1304D18B3E6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{965D5A7B-FA73-41AB-A55C-1304D18B3E6E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -163,7 +163,7 @@ Global
 		{CD744DB8-C466-4C65-9D38-83841E410096} = {59D25ABB-4F8A-486F-A6B2-079E404A1F83}
 		{6DC43993-EC1A-4B74-807C-6C7329959861} = {FF840B47-B84B-4169-96EE-2F7352C765A8}
 		{DE1365DE-4F88-4407-8E06-204FA81D0EFD} = {14B61164-B740-48B8-8A55-80270E73A0C4}
-		{BF2DB825-C0EE-4E5C-9148-C23819149320} = {FF840B47-B84B-4169-96EE-2F7352C765A8}
+		{965D5A7B-FA73-41AB-A55C-1304D18B3E6E} = {FF840B47-B84B-4169-96EE-2F7352C765A8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AD5A920B-6A7B-40D3-AA69-7D43B382F214}

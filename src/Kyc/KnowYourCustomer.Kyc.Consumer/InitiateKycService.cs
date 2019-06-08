@@ -1,6 +1,6 @@
 ﻿using KnowYourCustomer.Common;
-using KnowYourCustomer.Common.Http.Interfaces;
 using KnowYourCustomer.Common.Messaging.Interfaces;
+using KnowYourCustomer.Common.Web.Interfaces;
 using KnowYourCustomer.Kyc.Contracts.Models;
 using KnowYourCustomer.Kyc.Contracts.Public.Models;
 using Microsoft.Extensions.Hosting;
