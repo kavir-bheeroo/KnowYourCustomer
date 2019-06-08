@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
+using IdentityModel.Client;
 using KnowYourCustomer.Common.Hosting;
+using KnowYourCustomer.Common.Http.Clients;
+using KnowYourCustomer.Common.Http.Interfaces;
 using KnowYourCustomer.Common.Messaging.Kafka.Extensions;
 using KnowYourCustomer.Kyc.Consumer.Mappers;
 using KnowYourCustomer.Kyc.Contracts.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Net.Http.Headers;
 
 namespace KnowYourCustomer.Kyc.Consumer
 {
@@ -24,13 +26,27 @@ namespace KnowYourCustomer.Kyc.Consumer
                     services.AddHttpClient("kyc", c =>
                     {
                         c.BaseAddress = new Uri(hostContext.Configuration["KycServiceUrl"]);
-                        c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                        c.DefaultRequestHeaders.Add("Accept", "application/json");
                     });
 
                     services.AddHttpClient("identity", c =>
                     {
                         c.BaseAddress = new Uri(hostContext.Configuration["IdentityServerUrl"]);
-                        c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                        c.DefaultRequestHeaders.Add("Accept", "application/json");
+                    });
+
+                    services.AddSingleton(new ClientCredentialsTokenRequest
+                    {
+                        Address = $"{hostContext.Configuration["IdentityServerUrl"]}/connect/token",
+                        ClientId = hostContext.Configuration["ClientId"],
+                        ClientSecret = hostContext.Configuration["ClientSecret"],
+                        Scope = hostContext.Configuration["Scope"]
+                    });
+
+                    services.AddHttpClient<IIdentityServerClient, IdentityServerClient>(client =>
+                    {
+                        client.BaseAddress = new Uri(hostContext.Configuration["IdentityServerUrl"]);
+                        client.DefaultRequestHeaders.Add("Accept", "application/json");
                     });
 
                     services.AddAutoMapper(typeof(MappingProfile));

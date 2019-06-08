@@ -1,4 +1,5 @@
 ﻿using KnowYourCustomer.Common;
+using KnowYourCustomer.Common.Http.Interfaces;
 using KnowYourCustomer.Common.Messaging.Interfaces;
 using KnowYourCustomer.Kyc.Contracts.Models;
 using KnowYourCustomer.Kyc.Contracts.Public.Models;
@@ -15,11 +16,16 @@ namespace KnowYourCustomer.Kyc.Consumer
     public class InitiateKycService : IHostedService
     {
         private readonly IKafkaConsumer<string, InitiateKycResponseModel> _consumer;
+        private readonly IIdentityServerClient _identityServerClient;
         private readonly HttpClient _httpClient;
 
-        public InitiateKycService(IKafkaConsumer<string, InitiateKycResponseModel> consumer, IHttpClientFactory httpClientFactory)
+        public InitiateKycService(
+            IKafkaConsumer<string, InitiateKycResponseModel> consumer,
+            IIdentityServerClient identityServerClient,
+            IHttpClientFactory httpClientFactory)
         {
             _consumer = Guard.IsNotNull(consumer, nameof(consumer));
+            _identityServerClient = Guard.IsNotNull(identityServerClient, nameof(identityServerClient));
             Guard.IsNotNull(httpClientFactory, nameof(httpClientFactory));
             _httpClient = httpClientFactory.CreateClient("kyc");
         }
@@ -79,6 +85,13 @@ namespace KnowYourCustomer.Kyc.Consumer
             {
                 var request = new CheckMrzStatusRequest { UserId = message.Value.UserId, KycId = message.Value.KycId, TaskId = message.Value.MrzTaskId };
                 var payload = JsonConvert.SerializeObject(request);
+
+                // Get token from Identity Server
+                var accessToken = await _identityServerClient.RequestClientCredentialsTokenAsync();
+
+                // Set token in http client
+                _httpClient.SetBearerToken(accessToken);
+
                 var response = await _httpClient.PostAsync("api/kyc/checkmrzstatus", new StringContent(payload, Encoding.UTF8, "application/json"));
 
                 return response.IsSuccessStatusCode;

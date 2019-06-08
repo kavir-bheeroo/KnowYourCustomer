@@ -8,6 +8,7 @@ services:
     ports:
       - "5000:80"
     environment:
+      - "IdentityServerUrl=http://identity"
       - "ConnectionStrings:IdentityServerDb=Server=sqlserver;Database=KnowYourCustomer.IdentityDb;User Id=sa;Password=Pass_w0rd;Application Name=Kyc.Identity"
     depends_on:
       - sqlserver

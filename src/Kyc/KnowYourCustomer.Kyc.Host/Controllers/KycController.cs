@@ -15,6 +15,7 @@ namespace KnowYourCustomer.Kyc.Host.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class KycController : ControllerBase
     {
         private readonly IKycService _kycService;
@@ -26,7 +27,6 @@ namespace KnowYourCustomer.Kyc.Host.Controllers
             _mapper = Guard.IsNotNull(mapper, nameof(mapper));
         }
 
-        [Authorize]
         [HttpPost("initiate")]
         public async Task<ActionResult<InitiateKycResponse>> Initiate([FromForm] IFormFile file)
         {
@@ -59,7 +59,6 @@ namespace KnowYourCustomer.Kyc.Host.Controllers
             return Ok(response);
         }
 
-        //[Authorize]
         [HttpPost("checkmrzstatus")]
         public async Task<ActionResult<CheckMrzStatusResponse>> CheckMrzStatus(CheckMrzStatusRequest request)
         {
@@ -70,7 +69,6 @@ namespace KnowYourCustomer.Kyc.Host.Controllers
             return Ok(response);
         }
 
-        //[Authorize]
         [HttpPost("verifyidentity")]
         public async Task<ActionResult<CheckMrzStatusResponse>> VerifyIdentity(VerificationRequest request)
         {

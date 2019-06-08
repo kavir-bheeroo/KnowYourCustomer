@@ -19,7 +19,8 @@ namespace KnowYourCustomer.Identity.Configuration
         {
             return new List<ApiResource>
             {
-                new ApiResource("kyc", "KYC Service")
+                new ApiResource("kyc", "KYC Service"),
+                new ApiResource("user", "User Identity Service")
             };
         }
 
@@ -53,13 +54,12 @@ namespace KnowYourCustomer.Identity.Configuration
                     },
 
                     // scopes that client has access to
-                    AllowedScopes = { "kyc" }
+                    AllowedScopes = { "kyc", "user" }
                 },
                 new Client
                 {
                     ClientId = "postman.ro",
                     ClientName = "Postman RO tester",
-                    // no interactive user, use the clientid/secret for authentication
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
 
                     // secret for authentication
@@ -69,8 +69,24 @@ namespace KnowYourCustomer.Identity.Configuration
                     },
 
                     // scopes that client has access to
-                    AllowedScopes = { "kyc" }
-                }
+                    AllowedScopes = { "kyc", "user" }
+                },
+                new Client
+                {
+                    ClientId = "consumer",
+                    ClientName = "Consumer service",
+                    // no interactive user, use the clientid/secret for authentication
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+
+                    // secret for authentication
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    // scopes that client has access to
+                    AllowedScopes = { "kyc", "user" }
+                },
             };
         }
     }
