@@ -2,6 +2,7 @@
 using KnowYourCustomer.Common;
 using KnowYourCustomer.Identity.Contracts.Models;
 using KnowYourCustomer.Identity.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -24,6 +25,7 @@ namespace KnowYourCustomer.Identity.Controllers
             _mapper = Guard.IsNotNull(mapper, nameof(mapper));
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<bool>> Login(LoginModel model)
         {
@@ -36,6 +38,7 @@ namespace KnowYourCustomer.Identity.Controllers
             return Ok(false);
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult<RegisterResponseModel>> Register(RegisterRequestModel model)
         {
