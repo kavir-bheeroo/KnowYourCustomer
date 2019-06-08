@@ -1,9 +1,6 @@
 ﻿using KnowYourCustomer.Common.Messaging.Interfaces;
 using KnowYourCustomer.Common.Messaging.Kafka.Producers;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace KnowYourCustomer.Common.Messaging.Kafka.Factories
 {

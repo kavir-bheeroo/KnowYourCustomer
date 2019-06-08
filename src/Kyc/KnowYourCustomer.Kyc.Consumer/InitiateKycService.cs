@@ -4,6 +4,7 @@ using KnowYourCustomer.Common.Messaging.Interfaces;
 using KnowYourCustomer.Kyc.Contracts.Models;
 using KnowYourCustomer.Kyc.Contracts.Public.Models;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
@@ -18,16 +19,19 @@ namespace KnowYourCustomer.Kyc.Consumer
         private readonly IKafkaConsumer<string, InitiateKycResponseModel> _consumer;
         private readonly IIdentityServerClient _identityServerClient;
         private readonly HttpClient _httpClient;
+        private readonly ILogger<InitiateKycService> _logger;
 
         public InitiateKycService(
             IKafkaConsumer<string, InitiateKycResponseModel> consumer,
             IIdentityServerClient identityServerClient,
-            IHttpClientFactory httpClientFactory)
+            IHttpClientFactory httpClientFactory,
+            ILogger<InitiateKycService> logger)
         {
             _consumer = Guard.IsNotNull(consumer, nameof(consumer));
             _identityServerClient = Guard.IsNotNull(identityServerClient, nameof(identityServerClient));
             Guard.IsNotNull(httpClientFactory, nameof(httpClientFactory));
             _httpClient = httpClientFactory.CreateClient("kyc");
+            _logger = Guard.IsNotNull(logger, nameof(logger));
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -61,7 +65,7 @@ namespace KnowYourCustomer.Kyc.Consumer
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine($"Error occurred: { e.Message } ");
+                        _logger.LogError(e, e.Message);
                     }
                 }
             }
@@ -74,11 +78,11 @@ namespace KnowYourCustomer.Kyc.Consumer
         private async Task<bool> HandleMessage(IKafkaMessage<string, InitiateKycResponseModel> message)
         {
             var serializedValue = JsonConvert.SerializeObject(message.Value);
-            Console.WriteLine($"Consumed message in service \nkey: '{ message.Key }' \nvalue: '{ serializedValue }' at {DateTime.UtcNow}");
+            _logger.LogDebug($"Consumed message in service \nkey: '{ message.Key }' \nvalue: '{ serializedValue }' at {DateTime.UtcNow}");
 
             foreach (var header in message.Headers)
             {
-                Console.WriteLine($"Key: { header.Key }\tValue: { header.Value }");
+                _logger.LogDebug($"Key: { header.Key }\tValue: { header.Value }");
             }
 
             try
@@ -96,9 +100,9 @@ namespace KnowYourCustomer.Kyc.Consumer
 
                 return response.IsSuccessStatusCode;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.WriteLine(ex.Message);
+                _logger.LogError(e, e.Message);
             }
 
             return false;

@@ -16,7 +16,7 @@ namespace KnowYourCustomer.Kyc.Verifier.Trulioo.Verifiers
         public TruliooApiVerifier(IHttpClientFactory httpClientFactory)
         {
             Guard.IsNotNull(httpClientFactory, nameof(httpClientFactory));
-            _httpClient = httpClientFactory.CreateClient("trulioo");
+            _httpClient = httpClientFactory.CreateClient("verifier");
         }
 
         public async Task<bool> VerifyAsync(IdentityVerificationRequest request)

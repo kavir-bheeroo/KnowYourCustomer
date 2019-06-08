@@ -1,5 +1,8 @@
-﻿using KnowYourCustomer.Kyc.Verifier.Contracts.Interfaces;
+﻿using KnowYourCustomer.Common;
+using KnowYourCustomer.Kyc.Verifier.Contracts.Interfaces;
 using KnowYourCustomer.Kyc.Verifier.Contracts.Models;
+using KnowYourCustomer.Kyc.Verifier.Contracts.Options;
+using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,9 +13,16 @@ namespace KnowYourCustomer.Kyc.Verifier.Trulioo.Verifiers
 {
     public class TruliooSdkVerifier : IVerifier
     {
+        private readonly VerificationProviderOptions _verificationProviderOptions;
+
+        public TruliooSdkVerifier(IOptions<VerificationProviderOptions> options)
+        {
+            _verificationProviderOptions = Guard.IsNotNull(options, nameof(options)).Value;
+        }
+
         public async Task<bool> VerifyAsync(IdentityVerificationRequest request)
         {
-            var truliooClient = new TruliooApiClient("raiuniverse", "test1234!");
+            var truliooClient = new TruliooApiClient(_verificationProviderOptions.Username, _verificationProviderOptions.Password);
 
             var countryList = await truliooClient.Configuration.GetCountryCodesAsync("Identity Verification");
 

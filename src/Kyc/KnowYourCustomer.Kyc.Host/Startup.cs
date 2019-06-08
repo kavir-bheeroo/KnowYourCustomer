@@ -8,9 +8,9 @@ using KnowYourCustomer.Kyc.Data.EfCore.Repositories;
 using KnowYourCustomer.Kyc.Mappers;
 using KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors;
 using KnowYourCustomer.Kyc.MrzProcessor.Contracts.Interfaces;
+using KnowYourCustomer.Kyc.MrzProcessor.Contracts.Options;
 using KnowYourCustomer.Kyc.Services;
-using KnowYourCustomer.Kyc.Verifier.Contracts.Interfaces;
-using KnowYourCustomer.Kyc.Verifier.Trulioo.Verifiers;
+using KnowYourCustomer.Kyc.Verifier.Trulioo.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -53,21 +53,18 @@ namespace KnowYourCustomer.Kyc.Host
             services.AddScoped<IKycDocumentRepository, KycDocumentRepository>();
             services.AddScoped<IKycOperationRepository, KycOperationRepository>();
 
-            services.AddScoped<IMrzProcessor, AbbyyMrzProcessor>();
             services.AddScoped<IKycService, KycService>();
-            services.AddScoped<IVerifier, TruliooApiVerifier>();
+
+            services.AddScoped<IMrzProcessor, AbbyyMrzProcessor>();
+            services.Configure<MrzProviderOptions>(Configuration.GetSection(MrzProviderOptions.DefaultSectionName));
+
+            services.AddVerifierServices(Configuration);
 
             services.AddKafkaProducer<string, InitiateKycResponseModel>(Configuration, "initiate-kyc");
             services.AddKafkaProducer<string, CheckMrzStatusResponseModel>(Configuration, "check-mrz");
             services.AddKafkaProducer<string, VerificationResponseModel>(Configuration, "verify-identity");
 
             services.AddAutoMapper(typeof(MappingProfile), typeof(Mappers.MappingProfile));
-
-            services.AddHttpClient("trulioo", c =>
-            {
-                c.BaseAddress = new Uri("https://gateway.trulioo.com/");
-                c.DefaultRequestHeaders.Add("x-trulioo-api-key", "58dacf1c48b6f2828dd6f46e7054415b");
-            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
