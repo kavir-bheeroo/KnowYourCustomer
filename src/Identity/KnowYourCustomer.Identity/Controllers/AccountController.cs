@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KnowYourCustomer.Common;
+using KnowYourCustomer.Common.Exceptions;
 using KnowYourCustomer.Identity.Contracts.Models;
 using KnowYourCustomer.Identity.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -68,6 +69,14 @@ namespace KnowYourCustomer.Identity.Controllers
             await _userManager.UpdateAsync(user);
 
             return Ok();
+        }
+
+        // Added just for testing purposes.
+        [AllowAnonymous]
+        [HttpGet("testexception")]
+        public Task<IActionResult> TestException()
+        {
+            throw new ObjectAlreadyExistsException("Testing the response middleware");
         }
     }
 }

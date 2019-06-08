@@ -1,7 +1,10 @@
-﻿using KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Models;
+﻿using KnowYourCustomer.Common;
+using KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Models;
 using KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Parsers;
 using KnowYourCustomer.Kyc.MrzProcessor.Contracts.Interfaces;
 using KnowYourCustomer.Kyc.MrzProcessor.Contracts.Models;
+using KnowYourCustomer.Kyc.MrzProcessor.Contracts.Options;
+using Microsoft.Extensions.Options;
 using System;
 using System.IO;
 using System.Net;
@@ -15,11 +18,16 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors
 {
     public class AbbyyMrzProcessor : IMrzProcessor
     {
-        private const string ServerUrl = "https://cloud-eu.ocrsdk.com/";
+        private readonly MrzProviderOptions _providerOptions;
+
+        public AbbyyMrzProcessor(IOptions<MrzProviderOptions> options)
+        {
+            _providerOptions = Guard.IsNotNull(options, nameof(options)).Value;
+        }
 
         public MrzSubmitResponse ProcessMrzFile(MrzSubmitRequest request)
         {
-            string url = string.Format("{0}/processMRZ", ServerUrl);
+            string url = string.Format("{0}/processMRZ", _providerOptions.Url);
             WebRequest webRequest = CreatePostRequest(url);
             WriteFileToRequest(request.FilePath, webRequest);
 
@@ -31,7 +39,7 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors
         public MrzStatusResponse GetMrzTaskStatus(MrzStatusRequest request)
         {
             // Get Task Status
-            string url = string.Format("{0}/getTaskStatus?taskId={1}", ServerUrl, Uri.EscapeDataString(request.TaskId));
+            string url = string.Format("{0}/getTaskStatus?taskId={1}", _providerOptions.Url, Uri.EscapeDataString(request.TaskId));
 
             Thread.Sleep(3000);
             WebRequest webRequest = CreateGetRequest(url);
@@ -44,7 +52,7 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors
             }
 
             // Download Task response file
-            var kycFolderResponsePath = Path.Combine(Environment.CurrentDirectory, "kyc-documents-result");
+            var kycFolderResponsePath = Path.Combine(Environment.CurrentDirectory, _providerOptions.StorageFolder);
             Directory.CreateDirectory(kycFolderResponsePath);
             var path = Path.Combine(kycFolderResponsePath, Path.GetFileNameWithoutExtension(request.KycId.ToString()) + $"_{DateTime.UtcNow.ToString("ddMMyyy:hhmmss")}.xml");
             DownloadResult(abbyyOcrTask, path);
@@ -126,10 +134,10 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
 
-            if (url.StartsWith(ServerUrl, StringComparison.InvariantCultureIgnoreCase))
+            if (url.StartsWith(_providerOptions.Url, StringComparison.InvariantCultureIgnoreCase))
             {
-                Encoding encoding = Encoding.GetEncoding("iso-8859-1");
-                string toEncode = "know-your-customer" + ":" + "+hn8GL6l3pnUl/RGmzkobmPJ";
+                Encoding encoding = Encoding.GetEncoding(_providerOptions.Encoding);
+                string toEncode = $"{_providerOptions.Username}:{_providerOptions.Password}";
                 string baseEncoded = Convert.ToBase64String(encoding.GetBytes(toEncode));
                 request.Headers.Add("Authorization", "Basic " + baseEncoded);
             }
@@ -143,10 +151,10 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
 
-            if (url.StartsWith(ServerUrl, StringComparison.InvariantCultureIgnoreCase))
+            if (url.StartsWith(_providerOptions.Url, StringComparison.InvariantCultureIgnoreCase))
             {
-                Encoding encoding = Encoding.GetEncoding("iso-8859-1");
-                string toEncode = "know-your-customer" + ":" + "+hn8GL6l3pnUl/RGmzkobmPJ";
+                Encoding encoding = Encoding.GetEncoding(_providerOptions.Encoding);
+                string toEncode = $"{_providerOptions.Username}:{_providerOptions.Password}";
                 string baseEncoded = Convert.ToBase64String(encoding.GetBytes(toEncode));
                 request.Headers.Add("Authorization", "Basic " + baseEncoded);
             }
@@ -187,12 +195,6 @@ namespace KnowYourCustomer.Kyc.MrzProcessor.Abbyy.Processors
             }
             catch (WebException e)
             {
-                //String friendlyMessage = retrieveFriendlyMessage(e);
-                //if (friendlyMessage != null)
-                //{
-                //    throw new ProcessingErrorException(friendlyMessage, e);
-                //}
-                //throw new ProcessingErrorException("Cannot upload file", e);
                 throw e;
             }
         }

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace KnowYourCustomer.Common.Http.Interfaces
+namespace KnowYourCustomer.Common.Web.Interfaces
 {
     public interface IIdentityServerClient
     {

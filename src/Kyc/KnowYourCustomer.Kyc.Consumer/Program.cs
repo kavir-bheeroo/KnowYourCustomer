@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using IdentityModel.Client;
 using KnowYourCustomer.Common.Hosting;
-using KnowYourCustomer.Common.Http.Clients;
-using KnowYourCustomer.Common.Http.Interfaces;
 using KnowYourCustomer.Common.Messaging.Kafka.Extensions;
+using KnowYourCustomer.Common.Web.HttpClients;
+using KnowYourCustomer.Common.Web.Interfaces;
 using KnowYourCustomer.Kyc.Consumer.Mappers;
 using KnowYourCustomer.Kyc.Contracts.Models;
 using Microsoft.Extensions.DependencyInjection;

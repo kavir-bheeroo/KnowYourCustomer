@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
+using KnowYourCustomer.Common.Web.Middlewares;
 using KnowYourCustomer.Identity.Configuration;
 using KnowYourCustomer.Identity.Data;
 using KnowYourCustomer.Identity.Data.Entities;
@@ -99,6 +100,7 @@ namespace KnowYourCustomer.Identity
             }
 
             app.UseAuthentication();
+            app.UseMiddleware<ResponseMiddleware>();
             app.UseMvc();
             app.UseIdentityServer();
         }

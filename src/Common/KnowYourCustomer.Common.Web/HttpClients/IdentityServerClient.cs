@@ -1,10 +1,10 @@
 ﻿using IdentityModel.Client;
-using KnowYourCustomer.Common.Http.Interfaces;
+using KnowYourCustomer.Common.Web.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace KnowYourCustomer.Common.Http.Clients
+namespace KnowYourCustomer.Common.Web.HttpClients
 {
     /// <summary>
     /// Followed Identity Server OAuth token client from - https://blog.joaograssi.com/typed-httpclient-with-messagehandler-getting-accesstokens-from-identityserver/

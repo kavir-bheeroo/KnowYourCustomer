@@ -9,6 +9,7 @@ COPY ["src/Identity/KnowYourCustomer.Identity.Contracts/KnowYourCustomer.Identit
 COPY ["src/Common/KnowYourCustomer.Common.Messaging/KnowYourCustomer.Common.Messaging.csproj", "src/Common/KnowYourCustomer.Common.Messaging/"]
 COPY ["src/Common/KnowYourCustomer.Common/KnowYourCustomer.Common.csproj", "src/Common/KnowYourCustomer.Common/"]
 COPY ["src/Common/KnowYourCustomer.Common.Hosting/KnowYourCustomer.Common.Hosting.csproj", "src/Common/KnowYourCustomer.Common.Hosting/"]
+COPY ["src/Common/KnowYourCustomer.Common.Web/KnowYourCustomer.Common.Web.csproj", "src/Common/KnowYourCustomer.Common.Web/"]
 COPY ["src/Kyc/KnowYourCustomer.Kyc.Contracts.Public/KnowYourCustomer.Kyc.Contracts.Public.csproj", "src/Kyc/KnowYourCustomer.Kyc.Contracts.Public/"]
 COPY ["src/Common/KnowYourCustomer.Common.Messaging.Kafka/KnowYourCustomer.Common.Messaging.Kafka.csproj", "src/Common/KnowYourCustomer.Common.Messaging.Kafka/"]
 RUN dotnet restore "src/Kyc/KnowYourCustomer.Kyc.Consumer/KnowYourCustomer.Kyc.Consumer.csproj"

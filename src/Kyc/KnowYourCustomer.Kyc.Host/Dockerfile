@@ -11,6 +11,7 @@ COPY ["src/Kyc/KnowYourCustomer.Kyc.MrzProcessor.Contracts/KnowYourCustomer.Kyc.
 COPY ["src/Common/KnowYourCustomer.Common/KnowYourCustomer.Common.csproj", "src/Common/KnowYourCustomer.Common/"]
 COPY ["src/Kyc/KnowYourCustomer.Kyc.Verifier.Trulioo/KnowYourCustomer.Kyc.Verifier.Trulioo.csproj", "src/Kyc/KnowYourCustomer.Kyc.Verifier.Trulioo/"]
 COPY ["src/Kyc/KnowYourCustomer.Kyc.Verifier.Contracts/KnowYourCustomer.Kyc.Verifier.Contracts.csproj", "src/Kyc/KnowYourCustomer.Kyc.Verifier.Contracts/"]
+COPY ["src/Common/KnowYourCustomer.Common.Web/KnowYourCustomer.Common.Web.csproj", "src/Common/KnowYourCustomer.Common.Web/"]
 COPY ["src/Kyc/KnowYourCustomer.Kyc.Data.EfCore/KnowYourCustomer.Kyc.Data.EfCore.csproj", "src/Kyc/KnowYourCustomer.Kyc.Data.EfCore/"]
 COPY ["src/Kyc/KnowYourCustomer.Kyc.Data.Contracts/KnowYourCustomer.Kyc.Data.Contracts.csproj", "src/Kyc/KnowYourCustomer.Kyc.Data.Contracts/"]
 COPY ["src/Kyc/KnowYourCustomer.Kyc.Contracts.Public/KnowYourCustomer.Kyc.Contracts.Public.csproj", "src/Kyc/KnowYourCustomer.Kyc.Contracts.Public/"]
