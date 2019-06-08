@@ -1,16 +1,20 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace KnowYourCustomer.Common.Exceptions
 {
 
     [Serializable]
-    public class ObjectAlreadyExistsException : Exception
+    public class ObjectAlreadyExistsException : ExceptionBase
     {
-        public ObjectAlreadyExistsException() { }
-        public ObjectAlreadyExistsException(string message) : base(message) { }
-        public ObjectAlreadyExistsException(string message, Exception inner) : base(message, inner) { }
-        protected ObjectAlreadyExistsException(
-          System.Runtime.Serialization.SerializationInfo info,
-          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+        public ObjectAlreadyExistsException(string customMessage) : base(customMessage)
+        {
+        }
+
+        /// <inheritdoc />
+        protected ObjectAlreadyExistsException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+
+        }
     }
 }

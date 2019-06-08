@@ -1,16 +1,26 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace KnowYourCustomer.Common.Exceptions
 {
 
     [Serializable]
-    public class UnauthorizedException : Exception
+    public class UnauthorizedException : ExceptionBase
     {
-        public UnauthorizedException() { }
-        public UnauthorizedException(string message) : base(message) { }
-        public UnauthorizedException(string message, Exception inner) : base(message, inner) { }
-        protected UnauthorizedException(
-          System.Runtime.Serialization.SerializationInfo info,
-          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+        public UnauthorizedException(string customMessage) : base(customMessage)
+        {
+        }
+
+        public UnauthorizedException(
+            string customMessage,
+            Exception innerException) : base(customMessage, innerException)
+        {
+        }
+
+        /// <inheritdoc />
+        protected UnauthorizedException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+
+        }
     }
 }

@@ -1,15 +1,26 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace KnowYourCustomer.Common.Exceptions
 {
     [Serializable]
-    public class BadRequestException : Exception
+    public class BadRequestException : ExceptionBase
     {
-        public BadRequestException() { }
-        public BadRequestException(string message) : base(message) { }
-        public BadRequestException(string message, Exception inner) : base(message, inner) { }
-        protected BadRequestException(
-          System.Runtime.Serialization.SerializationInfo info,
-          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+        public BadRequestException(
+            string customMessage) : base(customMessage)
+        {
+        }
+
+        public BadRequestException(
+            string customMessage,
+            Exception innerException) : base(customMessage, innerException)
+        {
+        }
+
+        /// <inheritdoc />
+        protected BadRequestException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+
+        }
     }
 }

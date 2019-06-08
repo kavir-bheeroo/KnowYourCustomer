@@ -6,6 +6,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:2.2-stretch AS build
 WORKDIR /src
 COPY ["src/Identity/KnowYourCustomer.Identity/KnowYourCustomer.Identity.csproj", "src/Identity/KnowYourCustomer.Identity/"]
 COPY ["src/Identity/KnowYourCustomer.Identity.Contracts/KnowYourCustomer.Identity.Contracts.csproj", "src/Identity/KnowYourCustomer.Identity.Contracts/"]
+COPY ["src/Common/KnowYourCustomer.Common.Web/KnowYourCustomer.Common.Web.csproj", "src/Common/KnowYourCustomer.Common.Web/"]
 COPY ["src/Common/KnowYourCustomer.Common/KnowYourCustomer.Common.csproj", "src/Common/KnowYourCustomer.Common/"]
 RUN dotnet restore "src/Identity/KnowYourCustomer.Identity/KnowYourCustomer.Identity.csproj"
 COPY . .

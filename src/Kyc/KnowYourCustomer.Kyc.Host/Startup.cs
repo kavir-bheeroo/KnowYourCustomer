@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KnowYourCustomer.Common.Messaging.Kafka.Extensions;
+using KnowYourCustomer.Common.Web.Middlewares;
 using KnowYourCustomer.Kyc.Contracts.Interfaces;
 using KnowYourCustomer.Kyc.Contracts.Models;
 using KnowYourCustomer.Kyc.Data.Contracts.Interfaces;
@@ -86,6 +87,7 @@ namespace KnowYourCustomer.Kyc.Host
             }
 
             app.UseAuthentication();
+            app.UseMiddleware<ResponseMiddleware>();
             app.UseMvc();
         }
 
